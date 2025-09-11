@@ -87,6 +87,14 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=qCiATfJ8KOI",
       "category": "jazz",
       "duration": "1 hora"
+    },
+    {
+      "id": 12,
+      "title": "☕ Upbeat Background Music",
+      "description": "Upbeat Background Music",
+      "youtubeUrl": "https://www.youtube.com/watch?v=DC7Y6sC7Ae4",
+      "category": "dance",
+      "duration": "1 hora"
     }
   ]
 }
