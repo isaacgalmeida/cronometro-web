@@ -127,6 +127,126 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=GmEd-MGkHDA",
       "category": "instrumental",
       "duration": "8 minutos"
+    },
+    {
+      "id": 17,
+      "title": "🎺 Samba Chorinho Instrumental",
+      "description": "Instrumental Brazilian Music - Samba Chorinho",
+      "youtubeUrl": "https://www.youtube.com/watch?v=1YXDGkmp8Yg&list=RD1YXDGkmp8Yg&start_radio=1",
+      "category": "samba",
+      "duration": "1 hora e 15 minutos"
+    },
+    {
+      "id": 18,
+      "title": "🎺 Pagode & Samba Mix Instrumental",
+      "description": "Mix Instrumental Brasileira - Vibes Tropicais para Amantes de Samba",
+      "youtubeUrl": "https://youtu.be/5xinaF6UBzY?si=FKe9MEVd8LQC25BA",
+      "category": "samba",
+      "duration": "1 hora"
+    },
+    {
+      "id": 19,
+      "title": "🎺 Bossa Nova & Samba Instrumental",
+      "description": "Bossa Nova & Samba Instrumental | Brazil 4K Ultra HD",
+      "youtubeUrl": "https://youtu.be/F7e7-IDADfo?si=xtNQdkrqPR6Na4uX",
+      "category": "bossa-nova",
+      "duration": "1 hora"
+    },
+    {
+      "id": 20,
+      "title": "🎸 Sambarock Instrumental",
+      "description": "Sambarock Instrumental - O Som dos Bailes",
+      "youtubeUrl": "https://youtu.be/l7GrymLZj7E?si=yKKVZAvYiE-Q8Sdk",
+      "category": "samba-rock",
+      "duration": "8 minutos"
+    },
+    {
+      "id": 21,
+      "title": "🎻 Violin and Piano Classical Music",
+      "description": "Violin and Piano - Classical Music",
+      "youtubeUrl": "https://youtu.be/MJgAmQaeKJ4?si=Z8c-JgNCpF-yhCTP",
+      "category": "classical",
+      "duration": "2 horas"
+    },
+    {
+      "id": 22,
+      "title": "🎵 Harpa, Piano e Violino Relaxante",
+      "description": "Relaxar ao som suave de harpa, piano e violino - Música para descansar e dormir bem",
+      "youtubeUrl": "https://youtu.be/nO4keMspVvc?si=xbKuGvOPlshgwSRO",
+      "category": "classical",
+      "duration": "3 horas"
+    },
+    {
+      "id": 23,
+      "title": "🎻 Popular Violin Covers",
+      "description": "Most Popular Violin Covers of Popular Songs 2018",
+      "youtubeUrl": "https://youtu.be/s-wmEgwHTT8?si=qKtXuSMpyQ_mnoKw",
+      "category": "violin",
+      "duration": "1 hora e 20 minutos"
+    },
+    {
+      "id": 24,
+      "title": "🎹 500 Beautiful Piano Melodies",
+      "description": "500 Most Famous Beautiful Piano Melodies - The Best Relaxing Piano Instrumental Love Songs",
+      "youtubeUrl": "https://www.youtube.com/watch?v=cKxRFlXYquo&list=RDcKxRFlXYquo&start_radio=1",
+      "category": "piano",
+      "duration": "2 horas e 57 minutos"
+    },
+    {
+      "id": 25,
+      "title": "🎵 Chill Day (Fundo Musical)",
+      "description": "LAKEY INSPIRED - Chill Day - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/3HjG1Y4QpVA?si=2Nt8NPW6hsBWUJhP",
+      "category": "background",
+      "duration": "3 minutos"
+    },
+    {
+      "id": 26,
+      "title": "🌙 Warm Nights (Fundo Musical)",
+      "description": "LAKEY INSPIRED - Warm Nights - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/rXYm8YLrZwU?si=UlXgkx85XlE4D9dt",
+      "category": "background",
+      "duration": "2 minutos e 53 segundos"
+    },
+    {
+      "id": 27,
+      "title": "🎵 Better Days (Fundo Musical)",
+      "description": "LAKEY INSPIRED - Better Days - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/RXLzvo6kvVQ?si=KNb2DveX8-Khn5uU",
+      "category": "background",
+      "duration": "3 minutos e 27 segundos"
+    },
+    {
+      "id": 28,
+      "title": "🎵 New Day (Fundo Musical)",
+      "description": "Ikson - New Day - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/cVA-9JHwbFY?si=y7nvXcSuQj1T7xn-",
+      "category": "background",
+      "duration": "3 minutos e 20 segundos"
+    },
+    {
+      "id": 29,
+      "title": "🎵 The Process (Fundo Musical)",
+      "description": "LAKEY INSPIRED - The Process - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/5cmlgvekbYY?si=Nym6n6VnUr31B-SR",
+      "category": "background",
+      "duration": "3 minutos e 43 segundos"
+    },
+    {
+      "id": 30,
+      "title": "🎵 Monroe (Fundo Musical)",
+      "description": "LAKEY INSPIRED - Monroe - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/zhoHfiLGbY4?si=BF4_34Bk80BN6Crq",
+      "category": "background",
+      "duration": "4 minutos e 23 segundos"
+    },
+    {
+      "id": 31,
+      "title": "🎵 Canals (Fundo Musical)",
+      "description": "Joakim Karud - Canals - Música para Fundo Musical",
+      "youtubeUrl": "https://youtu.be/jxpEdiB6U88?si=YOERpKAjV8zWs9JM",
+      "category": "background",
+      "duration": "2 minutos e 34 segundos"
     }
   ]
 }
