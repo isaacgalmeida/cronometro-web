@@ -95,6 +95,38 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=DC7Y6sC7Ae4",
       "category": "dance",
       "duration": "1 hora"
+    },
+    {
+      "id": 13,
+      "title": "🎵 Bittersweet Symphony Progressive Mix",
+      "description": "The Verve Bittersweet Symphony Mike Conville Progressive Mix",
+      "youtubeUrl": "https://www.youtube.com/watch?v=W9kW6nma-Fg",
+      "category": "progressive",
+      "duration": "9 minutos"
+    },
+    {
+      "id": 14,
+      "title": "🎸 Hotel California Instrumental",
+      "description": "Hotel California, Eagles. Versión instrumental 40 Fingers",
+      "youtubeUrl": "https://www.youtube.com/watch?v=vdjaaDP3BJM",
+      "category": "instrumental",
+      "duration": "5 minutos"
+    },
+    {
+      "id": 15,
+      "title": "🎹 Making Love Out Of Nothing At All Piano Cover",
+      "description": "Air Supply - Making Love Out Of Nothing At All (Piano Cover by Riyandi Kusuma)",
+      "youtubeUrl": "https://www.youtube.com/watch?v=1QXLujrRhMA",
+      "category": "piano",
+      "duration": "5 minutos"
+    },
+    {
+      "id": 16,
+      "title": "🎵 Bittersweet Symphony Extended Instrumental",
+      "description": "The Verve - Bittersweet Symphony [Extended Version] (Instrumental)",
+      "youtubeUrl": "https://www.youtube.com/watch?v=GmEd-MGkHDA",
+      "category": "instrumental",
+      "duration": "8 minutos"
     }
   ]
 }
