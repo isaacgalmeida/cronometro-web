@@ -255,6 +255,14 @@
       "youtubeUrl": "https://youtu.be/wR__3bqwsRQ?si=VFTDfi7qL0JmY2XF",
       "category": "bossa-nova",
       "duration": "2 horas e 10 minutos"
+    },
+    {
+      "id": 33,
+      "title": "MPB Instrumental",
+      "description": "Música instrumental brasileira",
+      "youtubeUrl": "https://www.youtube.com/watch?v=8RCbEIaCTm0&list=RD8RCbEIaCTm0&start_radio=1",
+      "category": "mpb",
+      "duration": "4 horas e 25 minutos"
     }
   ]
 }
