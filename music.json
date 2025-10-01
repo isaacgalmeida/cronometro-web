@@ -263,6 +263,14 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=8RCbEIaCTm0&list=RD8RCbEIaCTm0&start_radio=1",
       "category": "mpb",
       "duration": "4 horas e 25 minutos"
+    },
+    {
+      "id": 34,
+      "title": "🎵 Eagles - Hotel California",
+      "description": "Eagles - Hotel California",
+      "youtubeUrl": "https://youtu.be/1vPWtcKStec?si=rYharupvgz15-DkK",
+      "category": "geral",
+      "duration": "6 minutos"
     }
   ]
 }
