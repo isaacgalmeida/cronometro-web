@@ -279,6 +279,14 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=fkS2lla46p0",
       "category": "violin",
       "duration": "2 minutos e 51 segundos"
+    },
+    {
+      "id": 36,
+      "title": "🎻 Hallelujah (Instrumental - Piano, Violino e Cello)",
+      "description": "Hallelujah - Instrumental (Cover) | Piano Violin Cello",
+      "youtubeUrl": "https://youtu.be/RQuX0B0-AwQ?si=3WuuSMQ_2GZAIYsw",
+      "category": "instrumental",
+      "duration": "5 minutos"
     }
   ]
 }
