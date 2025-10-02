@@ -295,6 +295,38 @@
       "youtubeUrl": "https://youtu.be/rX2pB2kqHZ0?si=o8SHBjRsxXQLXwYL",
       "category": "instrumental",
       "duration": "4 minutos e 55 segundos"
+    },
+    {
+      "id": 38,
+      "title": "🎻 Perfect (Instrumental - Cello e Piano)",
+      "description": "Ed Sheeran - Perfect para cello e piano (Cover)",
+      "youtubeUrl": "https://youtu.be/UuW0WesnG5M?si=KsTdDt9_1k6KPof0",
+      "category": "instrumental",
+      "duration": "4 minutos e 37 segundos"
+    },
+    {
+      "id": 39,
+      "title": "🎻 Shallow (Instrumental - Cello e Piano)",
+      "description": "Shallow - A Star is Born (Cello & Piano)",
+      "youtubeUrl": "https://youtu.be/F4z5PKQT9Cg?si=LpUOEitKLXH_q1RB",
+      "category": "instrumental",
+      "duration": "3 minutos e 45 segundos"
+    },
+    {
+      "id": 40,
+      "title": "🎸 Música Sertaneja Instrumental (Country/Relax)",
+      "description": "Musica Sertaneja Instrumental / Country music / Relax music",
+      "youtubeUrl": "https://youtu.be/-OvLeH-dy1s?si=__3rCCV2iM4DdKKw",
+      "category": "instrumental",
+      "duration": "58 minutos e 18 segundos"
+    },
+    {
+      "id": 41,
+      "title": "🎺 Vem Curtir Música Brasileira (Set)",
+      "description": "Set - Vem Curtir Música Brasileira",
+      "youtubeUrl": "https://youtu.be/Ksq3QiLdOYc?si=D_R5RuErPtETIxFu",
+      "category": "mpb",
+      "duration": "1 hora e 4 minutos e 9 segundos"
     }
   ]
 }
