@@ -327,6 +327,30 @@
       "youtubeUrl": "https://youtu.be/Ksq3QiLdOYc?si=D_R5RuErPtETIxFu",
       "category": "mpb",
       "duration": "1 hora e 4 minutos e 9 segundos"
+    },
+    {
+      "id": 42,
+      "title": "🎶 CHILL BRAZIL (Samba, Bossa Nova, Latin Funk & Soul)",
+      "description": "CHILL BRAZIL | Samba, Bossa Nova, Latin Funk e Soul (Playlist 2)",
+      "youtubeUrl": "https://youtu.be/oGCu47JESi0?si=dRe5JLEE-9XZ8ENV",
+      "category": "mpb",
+      "duration": "1 hora e 2 minutos e 9 segundos"
+    },
+    {
+      "id": 43,
+      "title": "🎧 POP Brasileiro Remix (Dance Music)",
+      "description": "ESPECIAL - Os melhores remixes do POP Brasileiro (Dance Music)",
+      "youtubeUrl": "https://youtu.be/ph8B2gWqPes?si=PWQ2quR2cyOmsG8L",
+      "category": "pop",
+      "duration": "54 minutos e 34 segundos"
+    },
+    {
+      "id": 44,
+      "title": "🎵 REMIXES NACIONAIS (Set Mixado Especial)",
+      "description": "Lulu Santos, O Rappa, Cazuza, Jota Quest, Legião Urbana...",
+      "youtubeUrl": "https://youtu.be/n_-wxIEAQ70?si=TwQ6CCHIy1kJFKNh",
+      "category": "pop",
+      "duration": "1 hora e 1 minuto e 30 segundos"
     }
   ]
 }
