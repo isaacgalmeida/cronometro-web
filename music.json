@@ -359,6 +359,30 @@
       "youtubeUrl": "https://youtu.be/uE-TADy-oN0?si=GNp_5nk0atH0G-yR",
       "category": "pop",
       "duration": "11 minutos e 50 segundos"
+    },
+    {
+      "id": 46,
+      "title": "🙏 Hillsong Worship Piano (2 Hours)",
+      "description": "Hillsong | Two Hours of Worship Piano",
+      "youtubeUrl": "https://youtu.be/Q04XE2-XhyA?si=qIl09Bu-ITlZMofP",
+      "category": "worship",
+      "duration": "2 horas e 6 minutos e 22 segundos"
+    },
+    {
+      "id": 47,
+      "title": "🎺 Nicolas Krassik - O Casamento da Raposa (Forró Stream)",
+      "description": "Nicolas Krassik - O Casamento da Raposa",
+      "youtubeUrl": "https://youtu.be/2n9wmkcnyvE?si=_A1sK1NbsSQqmY65",
+      "category": "forró",
+      "duration": "4 minutos e 54 segundos"
+    },
+    {
+      "id": 48,
+      "title": "🎺 Nicolas Krassik - Sanfona Sentida e Cheirinho de Mulher (Forró Stream)",
+      "description": "Nicolas Krassik - Sanfona Sentida e Cheirinho de Mulher",
+      "youtubeUrl": "https://youtu.be/KlIoGPttvMQ?si=OmypBkwbGf_HhZRr",
+      "category": "forró",
+      "duration": "5 minutos e 16 segundos"
     }
   ]
 }
