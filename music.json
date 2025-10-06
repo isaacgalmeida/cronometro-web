@@ -383,6 +383,30 @@
       "youtubeUrl": "https://youtu.be/KlIoGPttvMQ?si=OmypBkwbGf_HhZRr",
       "category": "forró",
       "duration": "5 minutos e 16 segundos"
+    },
+    {
+      "id": 49,
+      "title": "🎄 Vintage Old Christmas Playlist",
+      "description": "Vintage Old Christmas Playlist - Músicas natalinas clássicas",
+      "youtubeUrl": "https://youtu.be/zsFNoriSxHU?si=ChQLMP0fi6aVZHrw",
+      "category": "christmas",
+      "duration": "56 minutos e 21 segundos"
+    },
+    {
+      "id": 50,
+      "title": "🎹 Happy Christmas Jazz Instrumental Piano Music (10 Hours)",
+      "description": "Happy Christmas Jazz Instrumental Piano Music - 10 horas de música natalina",
+      "youtubeUrl": "https://youtu.be/Jo1wpKmIfEw?si=9OkE3sFz5cvSUGFv",
+      "category": "christmas",
+      "duration": "10 horas"
+    },
+    {
+      "id": 51,
+      "title": "🎅🎄⛄ Happy ver. Christmas Jazz instrumental / Carol Piano Collection",
+      "description": "Happy ver. Christmas Jazz instrumental / Carol Piano Collection",
+      "youtubeUrl": "https://youtu.be/mmJ-KiSIsD4?si=A0oiXqYNGndnhTEe",
+      "category": "christmas",
+      "duration": "1 hora e 48 minutos e 35 segundos"
     }
   ]
 }
