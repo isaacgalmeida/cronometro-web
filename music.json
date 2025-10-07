@@ -407,6 +407,14 @@
       "youtubeUrl": "https://youtu.be/mmJ-KiSIsD4?si=A0oiXqYNGndnhTEe",
       "category": "christmas",
       "duration": "1 hora e 48 minutos e 35 segundos"
+    },
+    {
+      "id": 52,
+      "title": "🎵 Música de Filme no Piano | Trilhas Sonoras de Filmes",
+      "description": "Playlist de música relaxante com mix automático do YouTube",
+      "youtubeUrl": "https://www.youtube.com/watch?v=vEngXaIvQWY&list=RDvEngXaIvQWY&start_radio=1",
+      "category": "relaxante",
+      "duration": "44 minutos"
     }
   ]
 }
