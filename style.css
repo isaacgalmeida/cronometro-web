@@ -521,10 +521,6 @@ select:focus-visible {
     margin-bottom: 1rem;
   }
 
-  #displayedImage {
-    max-height: 250px;
-  }
-
   /* Smaller timer on mobile when image is present */
   .timer-with-image #timer {
     font-size: 3rem !important;
@@ -532,10 +528,6 @@ select:focus-visible {
 }
 
 @media (max-width: 480px) {
-  #displayedImage {
-    max-height: 200px;
-  }
-
   .timer-with-image #timer {
     font-size: 2.5rem !important;
   }
