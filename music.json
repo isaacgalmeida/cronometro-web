@@ -439,6 +439,14 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=qz3GmG67hEk",
       "category": "geral",
       "duration": "4 minutos e 32 segundos"
+    },
+    {
+      "id": 56,
+      "title": "🎵 Anjos da Guarda - Leci Brandão (Radio Mix)",
+      "description": "Leci Brandão - Anjos da Guarda com mix automático do YouTube",
+      "youtubeUrl": "https://www.youtube.com/watch?v=23V62ZPpEMw&list=RD23V62ZPpEMw&start_radio=1",
+      "category": "mpb",
+      "duration": "Mix contínuo"
     }
   ]
 }
