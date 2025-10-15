@@ -1149,6 +1149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     initializeEventListeners();
+    initializeImageUpload();
 
     // restaura estado ANTES de permitir salvar
     const savedState = loadTimerState();
@@ -1207,6 +1208,7 @@ if (document.readyState !== 'loading') {
     try {
       if (typeof lucide !== 'undefined') lucide.createIcons();
       initializeEventListeners();
+      initializeImageUpload();
 
       const savedState = loadTimerState();
       if (savedState) {
@@ -1255,6 +1257,210 @@ window.addEventListener('beforeunload', () => {
 setInterval(() => {
   if (isRunning || timeLeft > 0) saveTimerState();
 }, 5000);
+
+// -------------------- Custom Background Image Manager --------------------
+const CUSTOM_IMAGE_KEY = 'cronometro_custom_background_image';
+
+function initializeImageUpload() {
+  const imageUpload = document.getElementById('imageUpload');
+  const imagePreview = document.getElementById('imagePreview');
+  const previewImg = document.getElementById('previewImg');
+  const applyImageBtn = document.getElementById('applyImage');
+  const removeImageBtn = document.getElementById('removeImage');
+  const imageStatus = document.getElementById('imageStatus');
+  const customImageContainer = document.getElementById('customImageContainer');
+
+  if (!imageUpload) return;
+
+  // Carrega imagem salva no localStorage
+  loadSavedImage();
+
+  // Upload de imagem
+  imageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validação do arquivo
+    if (!file.type.startsWith('image/')) {
+      showImageStatus('❌ Por favor, selecione apenas arquivos de imagem.', 'error');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB
+      showImageStatus('❌ A imagem deve ter no máximo 5MB.', 'error');
+      return;
+    }
+
+    // Lê o arquivo
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageData = e.target.result;
+
+      // Mostra preview
+      previewImg.src = imageData;
+      imagePreview.classList.remove('hidden');
+      applyImageBtn.disabled = false;
+
+      showImageStatus('✅ Imagem carregada. Clique em "Aplicar" para usar como fundo.', 'success');
+    };
+
+    reader.onerror = () => {
+      showImageStatus('❌ Erro ao carregar a imagem.', 'error');
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  // Aplicar imagem
+  applyImageBtn.addEventListener('click', () => {
+    const imageData = previewImg.src;
+    if (imageData) {
+      saveCustomImage(imageData);
+      applyCustomImage(imageData);
+      showImageStatus('✅ Imagem aplicada como fundo!', 'success');
+    }
+  });
+
+  // Remover imagem
+  removeImageBtn.addEventListener('click', () => {
+    removeCustomImage();
+    showImageStatus('🗑️ Imagem de fundo removida.', 'info');
+  });
+}
+
+function showImageStatus(message, type = 'info') {
+  const statusEl = document.getElementById('imageStatus');
+  if (!statusEl) return;
+
+  statusEl.textContent = message;
+
+  // Define cor baseada no tipo
+  switch (type) {
+    case 'success':
+      statusEl.style.color = '#10b981';
+      break;
+    case 'error':
+      statusEl.style.color = '#ef4444';
+      break;
+    case 'info':
+      statusEl.style.color = '#3b82f6';
+      break;
+    default:
+      statusEl.style.color = '';
+  }
+
+  // Remove mensagem após 5 segundos
+  setTimeout(() => {
+    if (statusEl.textContent === message) {
+      statusEl.textContent = '';
+      statusEl.style.color = '';
+    }
+  }, 5000);
+}
+
+function saveCustomImage(imageData) {
+  try {
+    localStorage.setItem(CUSTOM_IMAGE_KEY, imageData);
+    console.log('Custom image saved to localStorage');
+  } catch (error) {
+    console.error('Error saving custom image:', error);
+    showImageStatus('❌ Erro ao salvar imagem. Tente uma imagem menor.', 'error');
+  }
+}
+
+function loadSavedImage() {
+  try {
+    const savedImage = localStorage.getItem(CUSTOM_IMAGE_KEY);
+    if (savedImage) {
+      applyCustomImage(savedImage);
+      showImageStatus('📸 Imagem personalizada carregada.', 'info');
+    }
+  } catch (error) {
+    console.error('Error loading saved image:', error);
+  }
+}
+
+function applyCustomImage(imageData) {
+  const customImageDisplay = document.getElementById('customImageDisplay');
+  const displayedImage = document.getElementById('displayedImage');
+  const timerCard = document.querySelector('.w-full.max-w-2xl.mb-8');
+
+  if (customImageDisplay && displayedImage && imageData) {
+    // Aplica a imagem personalizada
+    displayedImage.src = imageData;
+    customImageDisplay.classList.remove('hidden');
+
+    // Reduz o tamanho do timer quando há imagem
+    if (timerCard) {
+      timerCard.classList.remove('max-w-2xl');
+      timerCard.classList.add('max-w-xl');
+    }
+
+    // Ajusta o timer display para ficar menor
+    const timerEl = document.getElementById('timer');
+    if (timerEl) {
+      timerEl.classList.remove('text-9xl', 'md:text-9xl');
+      timerEl.classList.add('text-6xl', 'md:text-7xl');
+    }
+
+    // Adiciona classe ao body para CSS responsivo
+    document.body.classList.add('timer-with-image');
+
+    console.log('Custom image applied');
+  }
+}
+
+function removeCustomImage() {
+  try {
+    localStorage.removeItem(CUSTOM_IMAGE_KEY);
+
+    const customImageDisplay = document.getElementById('customImageDisplay');
+    const imagePreview = document.getElementById('imagePreview');
+    const imageUpload = document.getElementById('imageUpload');
+    const applyImageBtn = document.getElementById('applyImage');
+    const timerCard = document.querySelector('.w-full.max-w-xl.mb-8') || document.querySelector('.w-full.max-w-2xl.mb-8');
+
+    // Remove imagem personalizada
+    if (customImageDisplay) {
+      customImageDisplay.classList.add('hidden');
+    }
+
+    // Restaura tamanho original do timer
+    if (timerCard) {
+      timerCard.classList.remove('max-w-xl');
+      timerCard.classList.add('max-w-2xl');
+    }
+
+    // Restaura tamanho original do timer display
+    const timerEl = document.getElementById('timer');
+    if (timerEl) {
+      timerEl.classList.remove('text-6xl', 'md:text-7xl');
+      timerEl.classList.add('text-9xl', 'md:text-9xl');
+    }
+
+    // Limpa preview
+    if (imagePreview) {
+      imagePreview.classList.add('hidden');
+    }
+
+    // Reset input
+    if (imageUpload) {
+      imageUpload.value = '';
+    }
+
+    // Desabilita botão aplicar
+    if (applyImageBtn) {
+      applyImageBtn.disabled = true;
+    }
+
+    // Remove classe do body
+    document.body.classList.remove('timer-with-image');
+
+    console.log('Custom image removed');
+  } catch (error) {
+    console.error('Error removing custom image:', error);
+  }
+}
 
 // render inicial (não persiste porque canPersist=false)
 updateDisplay();

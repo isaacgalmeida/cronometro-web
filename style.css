@@ -394,3 +394,149 @@ select:focus-visible {
   background-color: #ffbb33;
 }
 
+/* Custom Background Image Styles */
+#customImageContainer {
+  transition: opacity 0.5s ease-in-out;
+}
+
+#customImageContainer.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#customImageContainer:not(.hidden) {
+  opacity: 1;
+}
+
+/* Image Upload Styles */
+.image-upload-area {
+  transition: all 0.3s ease;
+}
+
+.image-upload-area:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+#imagePreview img {
+  transition: all 0.3s ease;
+}
+
+#imagePreview img:hover {
+  transform: scale(1.02);
+}
+
+/* Upload Button Animations */
+#applyImage:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+#removeImage:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+/* Status Message Animations */
+#imageStatus {
+  transition: all 0.3s ease;
+}
+
+/* Responsive adjustments for image container */
+@media (max-width: 768px) {
+  #customImageContainer {
+    background-attachment: scroll;
+  }
+}
+
+/* Cache Indicator Styles */
+.cache-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.cache-indicator.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cache-indicator.success {
+  background-color: rgba(34, 197, 94, 0.9);
+  color: white;
+}
+
+.cache-indicator.error {
+  background-color: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+.cache-indicator.info {
+  background-color: rgba(59, 130, 246, 0.9);
+  color: white;
+}
+/* Custom Image Display Styles */
+#customImageDisplay {
+  transition: all 0.5s ease-in-out;
+}
+
+#customImageDisplay img {
+  transition: all 0.3s ease;
+}
+
+/* Timer size transitions */
+#timer {
+  transition: font-size 0.5s ease-in-out, transform 0.3s ease;
+}
+
+/* Timer card size transitions */
+.w-full.max-w-2xl,
+.w-full.max-w-xl {
+  transition: max-width 0.5s ease-in-out;
+}
+
+/* Image display container styling */
+#customImageDisplay .bg-white\/10 {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#displayedImage {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments for custom image */
+@media (max-width: 768px) {
+  #customImageDisplay {
+    margin-bottom: 1rem;
+  }
+
+  #displayedImage {
+    max-height: 250px;
+  }
+
+  /* Smaller timer on mobile when image is present */
+  .timer-with-image #timer {
+    font-size: 3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #displayedImage {
+    max-height: 200px;
+  }
+
+  .timer-with-image #timer {
+    font-size: 2.5rem !important;
+  }
+}

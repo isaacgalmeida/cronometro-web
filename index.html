@@ -167,6 +167,19 @@
       id="conteudo"
       class="relative z-20 min-h-screen flex flex-col items-center justify-center p-4"
     >
+      <!-- Custom Image Display -->
+      <div id="customImageDisplay" class="hidden w-full max-w-4xl mb-6">
+        <div
+          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-4 shadow-2xl"
+        >
+          <img
+            id="displayedImage"
+            class="w-full max-h-96 object-cover rounded-lg shadow-lg"
+            alt="Imagem personalizada"
+          />
+        </div>
+      </div>
+
       <!-- Timer Card -->
       <div class="w-full max-w-2xl mb-8">
         <div
@@ -411,6 +424,84 @@
           manter o foco.
         </p>
       </section>
+
+      <!-- Image Upload Card -->
+      <div class="w-full max-w-2xl mt-8 mb-8">
+        <section
+          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-2xl"
+          aria-label="Upload de Imagem de Fundo"
+        >
+          <div class="flex items-center gap-3 mb-6">
+            <i data-lucide="image" class="w-6 h-6 text-white"></i>
+            <h2 class="text-xl font-semibold text-white">
+              Imagem de Fundo Personalizada
+            </h2>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Upload Area -->
+            <div
+              class="border-2 border-dashed border-white/30 rounded-lg p-6 text-center hover:border-white/50 transition-colors"
+            >
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                class="hidden"
+              />
+              <label
+                for="imageUpload"
+                class="cursor-pointer flex flex-col items-center gap-3"
+              >
+                <i data-lucide="upload" class="w-12 h-12 text-white/70"></i>
+                <div class="text-white">
+                  <p class="font-medium">
+                    Clique para fazer upload de uma imagem
+                  </p>
+                  <p class="text-sm text-white/70 mt-1">
+                    PNG, JPG, GIF até 5MB
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <!-- Image Preview -->
+            <div id="imagePreview" class="hidden">
+              <img
+                id="previewImg"
+                class="w-full max-h-48 object-cover rounded-lg shadow-lg"
+                alt="Preview da imagem"
+              />
+            </div>
+
+            <!-- Controls -->
+            <div class="flex gap-3 justify-center">
+              <button
+                id="applyImage"
+                class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-blue-600 hover:bg-blue-700 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled
+              >
+                <i data-lucide="check" class="w-4 h-4"></i>
+                Aplicar Imagem
+              </button>
+
+              <button
+                id="removeImage"
+                class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg"
+              >
+                <i data-lucide="x" class="w-4 h-4"></i>
+                Remover Imagem
+              </button>
+            </div>
+
+            <!-- Status -->
+            <div
+              id="imageStatus"
+              class="text-center text-white/70 text-sm"
+            ></div>
+          </div>
+        </section>
+      </div>
 
       <!-- AD abaixo do conteúdo principal -->
       <div class="w-full max-w-4xl mt-10">
