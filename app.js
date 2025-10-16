@@ -249,6 +249,9 @@ function tick() {
     clearTimerCache();
     endTimestamp = null;
 
+    // Atualiza estado do loop do MP3 quando timer termina
+    updateMp3LoopState();
+
     // Sincronizar música quando timer termina
     syncMusicWithTimer('stop');
 
@@ -275,6 +278,9 @@ function startTimer(min) {
   updateButtonStates('running');
 
   document.body.classList.add('timer-running');
+
+  // Atualiza estado do loop do MP3
+  updateMp3LoopState();
 
   // Re-habilita sync e sincroniza música quando timer inicia
   reEnableSync();
@@ -307,6 +313,9 @@ function startCurrentTimer() {
     document.body.classList.add('timer-running');
     updateDisplay();
 
+    // Atualiza estado do loop do MP3
+    updateMp3LoopState();
+
     // Re-habilita sync e sincroniza música quando timer atual inicia
     reEnableSync();
     syncMusicWithTimer('start');
@@ -325,6 +334,9 @@ function pauseTimer() {
   document.body.classList.remove('timer-running');
   updateDisplay();
 
+  // Atualiza estado do loop do MP3
+  updateMp3LoopState();
+
   // Sincronizar música quando timer pausa
   syncMusicWithTimer('pause');
 }
@@ -341,6 +353,9 @@ function resetTimer() {
   updateButtonStates('stopped');
   document.body.classList.remove('timer-running');
   clearTimerCache();
+
+  // Atualiza estado do loop do MP3
+  updateMp3LoopState();
 
   // Sincronizar música quando timer reseta
   syncMusicWithTimer('reset');
@@ -1549,6 +1564,7 @@ function initializeMp3Upload() {
     mp3Player.addEventListener('play', () => {
       setMusicSelected('mp3://custom');
       setMusicPlaying(true);
+      updateMp3LoopState();
       showMp3Status('🎵 Reproduzindo MP3 personalizado', 'info');
     });
 
@@ -1558,12 +1574,25 @@ function initializeMp3Upload() {
     });
 
     mp3Player.addEventListener('ended', () => {
-      setMusicPlaying(false);
-      showMp3Status('🔄 MP3 finalizado', 'info');
+      // Se o timer estiver rodando, reinicia o MP3
+      if (isRunning && timeLeft > 0) {
+        mp3Player.currentTime = 0;
+        mp3Player.play().catch(error => {
+          console.error('Erro ao reiniciar MP3:', error);
+        });
+      } else {
+        setMusicPlaying(false);
+        showMp3Status('🔄 MP3 finalizado', 'info');
+      }
     });
 
     mp3Player.addEventListener('error', () => {
       showMp3Status('❌ Erro ao reproduzir MP3', 'error');
+    });
+
+    // Listener para mudanças no volume
+    mp3Player.addEventListener('volumechange', () => {
+      updateMp3LoopState();
     });
   }
 }
@@ -1617,6 +1646,16 @@ function applyMp3(audioData, fileName) {
   }
 }
 
+function updateMp3LoopState() {
+  const mp3Player = document.getElementById('mp3Player');
+  
+  if (mp3Player) {
+    // Habilita loop apenas quando o timer está rodando
+    mp3Player.loop = isRunning && timeLeft > 0;
+    console.log('MP3 loop state updated:', mp3Player.loop, 'Timer running:', isRunning, 'Time left:', timeLeft);
+  }
+}
+
 function playMp3() {
   const mp3Player = document.getElementById('mp3Player');
   
@@ -1624,6 +1663,9 @@ function playMp3() {
     try {
       // Para qualquer música do YouTube que esteja tocando
       stopMusic();
+      
+      // Atualiza o estado do loop antes de reproduzir
+      updateMp3LoopState();
       
       // Reproduz o MP3
       mp3Player.currentTime = 0;
@@ -1767,6 +1809,7 @@ function handleTimerStart() {
     const selectedUrl = detectSelectedMusic();
     
     if (selectedUrl === 'mp3://custom') {
+      updateMp3LoopState(); // Atualiza loop antes de retomar
       resumeMp3();
       console.log('MP3 resumed via timer sync');
     } else if (pausedMusicUrl) {
@@ -1785,6 +1828,7 @@ function handleTimerStart() {
 function handleTimerPause() {
   try {
     if (musicState.currentUrl === 'mp3://custom') {
+      updateMp3LoopState(); // Desabilita loop quando pausa
       pauseMp3();
       console.log('MP3 paused via timer sync');
     } else if (musicState.isPlaying) {
@@ -1800,6 +1844,7 @@ function handleTimerPause() {
 function handleTimerStop() {
   try {
     if (musicState.currentUrl === 'mp3://custom') {
+      updateMp3LoopState(); // Desabilita loop quando para
       stopMp3();
       console.log('MP3 stopped via timer sync');
     } else if (musicState.isPlaying) {
