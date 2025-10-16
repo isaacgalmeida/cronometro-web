@@ -532,3 +532,78 @@ select:focus-visible {
     font-size: 2.5rem !important;
   }
 }
+/* MP3 Player Styles */
+#mp3PlayerSection {
+  transition: all 0.3s ease;
+}
+
+#mp3PlayerSection.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#mp3PlayerSection:not(.hidden) {
+  opacity: 1;
+}
+
+/* MP3 Upload Area */
+.mp3-upload-area {
+  transition: all 0.3s ease;
+}
+
+.mp3-upload-area:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Audio Player Styling */
+#mp3Player {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(10px);
+}
+
+#mp3Player::-webkit-media-controls-panel {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#mp3Player::-webkit-media-controls-play-button,
+#mp3Player::-webkit-media-controls-pause-button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+}
+
+/* MP3 Info Display */
+#mp3Info {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* MP3 Status Messages */
+#mp3Status {
+  transition: all 0.3s ease;
+}
+
+#mp3Status.success {
+  color: #10b981;
+}
+
+#mp3Status.error {
+  color: #ef4444;
+}
+
+#mp3Status.info {
+  color: #3b82f6;
+}
+
+/* Responsive adjustments for MP3 section */
+@media (max-width: 768px) {
+  #mp3PlayerSection .flex {
+    flex-direction: column;
+  }
+  
+  #mp3PlayerSection button {
+    width: 100%;
+  }
+}

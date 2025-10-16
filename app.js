@@ -1150,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     initializeEventListeners();
     initializeImageUpload();
+    initializeMp3Upload();
 
     // restaura estado ANTES de permitir salvar
     const savedState = loadTimerState();
@@ -1209,6 +1210,7 @@ if (document.readyState !== 'loading') {
       if (typeof lucide !== 'undefined') lucide.createIcons();
       initializeEventListeners();
       initializeImageUpload();
+      initializeMp3Upload();
 
       const savedState = loadTimerState();
       if (savedState) {
@@ -1464,3 +1466,387 @@ function removeCustomImage() {
 
 // render inicial (não persiste porque canPersist=false)
 updateDisplay();
+// -------------------- MP3 Upload and Player Manager --------------------
+const MP3_STORAGE_KEY = 'cronometro_custom_mp3';
+const MP3_INFO_KEY = 'cronometro_mp3_info';
+
+let customMp3Player = null;
+let mp3Data = null;
+
+function initializeMp3Upload() {
+  const mp3Upload = document.getElementById('mp3Upload');
+  const mp3PlayerSection = document.getElementById('mp3PlayerSection');
+  const mp3Player = document.getElementById('mp3Player');
+  const mp3Info = document.getElementById('mp3Info');
+  const playMp3Btn = document.getElementById('playMp3');
+  const removeMp3Btn = document.getElementById('removeMp3');
+
+  if (!mp3Upload) return;
+
+  // Carrega MP3 salvo no localStorage
+  loadSavedMp3();
+
+  // Upload de MP3
+  mp3Upload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validação do arquivo
+    if (!file.type.startsWith('audio/')) {
+      showMp3Status('❌ Por favor, selecione apenas arquivos de áudio.', 'error');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+      showMp3Status('❌ O arquivo deve ter no máximo 10MB.', 'error');
+      return;
+    }
+
+    // Lê o arquivo
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const audioData = e.target.result;
+      
+      // Salva no localStorage
+      saveMp3Data(audioData, {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        lastModified: file.lastModified
+      });
+
+      // Aplica o MP3
+      applyMp3(audioData, file.name);
+      showMp3Status('✅ MP3 carregado com sucesso!', 'success');
+    };
+
+    reader.onerror = () => {
+      showMp3Status('❌ Erro ao ler o arquivo MP3.', 'error');
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  // Reproduzir MP3
+  if (playMp3Btn) {
+    playMp3Btn.addEventListener('click', () => {
+      if (mp3Data) {
+        handleManualMusicControl();
+        playMp3();
+      }
+    });
+  }
+
+  // Remover MP3
+  if (removeMp3Btn) {
+    removeMp3Btn.addEventListener('click', () => {
+      removeMp3();
+    });
+  }
+
+  // Event listeners do player de áudio
+  if (mp3Player) {
+    mp3Player.addEventListener('play', () => {
+      setMusicSelected('mp3://custom');
+      setMusicPlaying(true);
+      showMp3Status('🎵 Reproduzindo MP3 personalizado', 'info');
+    });
+
+    mp3Player.addEventListener('pause', () => {
+      setMusicPlaying(false);
+      showMp3Status('⏸️ MP3 pausado', 'info');
+    });
+
+    mp3Player.addEventListener('ended', () => {
+      setMusicPlaying(false);
+      showMp3Status('🔄 MP3 finalizado', 'info');
+    });
+
+    mp3Player.addEventListener('error', () => {
+      showMp3Status('❌ Erro ao reproduzir MP3', 'error');
+    });
+  }
+}
+
+function saveMp3Data(audioData, fileInfo) {
+  try {
+    localStorage.setItem(MP3_STORAGE_KEY, audioData);
+    localStorage.setItem(MP3_INFO_KEY, JSON.stringify(fileInfo));
+    mp3Data = audioData;
+  } catch (error) {
+    console.error('Erro ao salvar MP3:', error);
+    showMp3Status('❌ Erro ao salvar MP3. Arquivo muito grande para o localStorage.', 'error');
+  }
+}
+
+function loadSavedMp3() {
+  try {
+    const savedMp3 = localStorage.getItem(MP3_STORAGE_KEY);
+    const savedInfo = localStorage.getItem(MP3_INFO_KEY);
+    
+    if (savedMp3 && savedInfo) {
+      const fileInfo = JSON.parse(savedInfo);
+      applyMp3(savedMp3, fileInfo.name);
+      showMp3Status('📁 MP3 personalizado carregado.', 'info');
+    }
+  } catch (error) {
+    console.error('Erro ao carregar MP3 salvo:', error);
+  }
+}
+
+function applyMp3(audioData, fileName) {
+  const mp3PlayerSection = document.getElementById('mp3PlayerSection');
+  const mp3Player = document.getElementById('mp3Player');
+  const mp3Info = document.getElementById('mp3Info');
+
+  if (mp3PlayerSection && mp3Player && mp3Info && audioData) {
+    // Configura o player
+    mp3Player.src = audioData;
+    mp3Player.load();
+    
+    // Mostra informações do arquivo
+    mp3Info.textContent = `🎵 ${fileName}`;
+    
+    // Mostra a seção do player
+    mp3PlayerSection.classList.remove('hidden');
+    
+    // Armazena os dados
+    mp3Data = audioData;
+    
+    console.log('MP3 aplicado:', fileName);
+  }
+}
+
+function playMp3() {
+  const mp3Player = document.getElementById('mp3Player');
+  
+  if (mp3Player && mp3Data) {
+    try {
+      // Para qualquer música do YouTube que esteja tocando
+      stopMusic();
+      
+      // Reproduz o MP3
+      mp3Player.currentTime = 0;
+      mp3Player.play().then(() => {
+        setMusicSelected('mp3://custom');
+        setMusicPlaying(true);
+        showMp3Status('🎵 Reproduzindo MP3 personalizado', 'info');
+      }).catch(error => {
+        console.error('Erro ao reproduzir MP3:', error);
+        showMp3Status('❌ Erro ao reproduzir MP3', 'error');
+      });
+    } catch (error) {
+      console.error('Erro ao reproduzir MP3:', error);
+      showMp3Status('❌ Erro ao reproduzir MP3', 'error');
+    }
+  }
+}
+
+function pauseMp3() {
+  const mp3Player = document.getElementById('mp3Player');
+  
+  if (mp3Player && !mp3Player.paused) {
+    mp3Player.pause();
+    setMusicPlaying(false);
+    showMp3Status('⏸️ MP3 pausado', 'info');
+  }
+}
+
+function resumeMp3() {
+  const mp3Player = document.getElementById('mp3Player');
+  
+  if (mp3Player && mp3Player.paused && mp3Data) {
+    mp3Player.play().then(() => {
+      setMusicPlaying(true);
+      showMp3Status('▶️ MP3 retomado', 'info');
+    }).catch(error => {
+      console.error('Erro ao retomar MP3:', error);
+      showMp3Status('❌ Erro ao retomar MP3', 'error');
+    });
+  }
+}
+
+function stopMp3() {
+  const mp3Player = document.getElementById('mp3Player');
+  
+  if (mp3Player) {
+    mp3Player.pause();
+    mp3Player.currentTime = 0;
+    setMusicPlaying(false);
+    setMusicSelected('');
+    showMp3Status('🔇 MP3 parado', 'info');
+  }
+}
+
+function removeMp3() {
+  try {
+    // Remove do localStorage
+    localStorage.removeItem(MP3_STORAGE_KEY);
+    localStorage.removeItem(MP3_INFO_KEY);
+    
+    // Para o player
+    stopMp3();
+    
+    // Limpa os dados
+    mp3Data = null;
+    
+    // Esconde a seção do player
+    const mp3PlayerSection = document.getElementById('mp3PlayerSection');
+    const mp3Upload = document.getElementById('mp3Upload');
+    
+    if (mp3PlayerSection) {
+      mp3PlayerSection.classList.add('hidden');
+    }
+    
+    if (mp3Upload) {
+      mp3Upload.value = '';
+    }
+    
+    showMp3Status('🗑️ MP3 removido com sucesso.', 'success');
+    
+    setTimeout(() => {
+      showMp3Status('', '');
+    }, 3000);
+    
+  } catch (error) {
+    console.error('Erro ao remover MP3:', error);
+    showMp3Status('❌ Erro ao remover MP3', 'error');
+  }
+}
+
+function showMp3Status(message, type = '') {
+  const statusEl = document.getElementById('mp3Status');
+  if (!statusEl) return;
+
+  statusEl.textContent = message;
+  statusEl.className = `text-center text-white/70 text-sm mt-2 ${type}`;
+
+  if (message && type !== 'info') {
+    setTimeout(() => {
+      if (statusEl.textContent === message) {
+        statusEl.textContent = '';
+        statusEl.className = 'text-center text-white/70 text-sm mt-2';
+      }
+    }, 5000);
+  }
+}
+
+// Atualiza as funções de sincronização para incluir MP3
+function detectSelectedMusic() {
+  // Verifica se há MP3 personalizado
+  if (mp3Data) {
+    setMusicSelected('mp3://custom');
+    return 'mp3://custom';
+  }
+
+  // Verifica música preset selecionada
+  const presetSelect = document.getElementById('presetMusic');
+  if (presetSelect && presetSelect.value) {
+    setMusicSelected(presetSelect.value);
+    return presetSelect.value;
+  }
+
+  // Verifica URL customizada válida
+  const customInput = document.getElementById('youtubeLink');
+  if (customInput && customInput.value.trim()) {
+    const url = customInput.value.trim();
+    if (isValidYouTubeUrl(url)) {
+      setMusicSelected(url);
+      return url;
+    }
+  }
+
+  // Nenhuma música válida encontrada
+  setMusicSelected('');
+  return '';
+}
+
+// Atualiza as funções de controle de música para incluir MP3
+function handleTimerStart() {
+  try {
+    const selectedUrl = detectSelectedMusic();
+    
+    if (selectedUrl === 'mp3://custom') {
+      resumeMp3();
+      console.log('MP3 resumed via timer sync');
+    } else if (pausedMusicUrl) {
+      resumeMusic();
+      console.log('Music resumed via timer sync');
+    } else if (musicState.currentUrl && !musicState.isPlaying) {
+      playYouTube(musicState.currentUrl);
+      console.log('Music started via timer sync');
+    }
+  } catch (error) {
+    showSyncError('Falha ao iniciar música');
+    console.error('Error in handleTimerStart:', error);
+  }
+}
+
+function handleTimerPause() {
+  try {
+    if (musicState.currentUrl === 'mp3://custom') {
+      pauseMp3();
+      console.log('MP3 paused via timer sync');
+    } else if (musicState.isPlaying) {
+      pauseMusic();
+      console.log('Music paused via timer sync');
+    }
+  } catch (error) {
+    showSyncError('Falha ao pausar música');
+    console.error('Error in handleTimerPause:', error);
+  }
+}
+
+function handleTimerStop() {
+  try {
+    if (musicState.currentUrl === 'mp3://custom') {
+      stopMp3();
+      console.log('MP3 stopped via timer sync');
+    } else if (musicState.isPlaying) {
+      stopMusic();
+      console.log('Music stopped via timer sync');
+    }
+  } catch (error) {
+    showSyncError('Falha ao parar música');
+    console.error('Error in handleTimerStop:', error);
+  }
+}
+
+// Atualiza a função de parar música para incluir MP3
+function stopMusic() {
+  try {
+    // Para MP3 se estiver tocando
+    if (musicState.currentUrl === 'mp3://custom') {
+      stopMp3();
+      return;
+    }
+
+    // Tenta usar a API do YouTube primeiro
+    if (youtubePlayer && youtubePlayer.stopVideo && isYouTubeAPIReady) {
+      youtubePlayer.stopVideo();
+      console.log('Music stopped via YouTube API');
+    }
+
+    // Limpa o player element
+    const playerElement = document.getElementById('musicPlayer');
+    if (playerElement) {
+      if (playerElement.querySelector('iframe')) {
+        playerElement.innerHTML = '';
+      } else {
+        playerElement.src = '';
+      }
+
+      playerElement.style.width = '0';
+      playerElement.style.height = '0';
+      playerElement.style.display = 'block'; // reset display
+    }
+
+    // Limpa URL pausada quando para completamente
+    pausedMusicUrl = '';
+    setMusicPlaying(false);
+    setMusicSelected(''); // limpa seleção quando para
+    showMusicStatus('🔇 Música parada');
+  } catch (error) {
+    console.error('Erro ao parar música:', error);
+  }
+}

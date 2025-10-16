@@ -1,57 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>
-      Cronômetro Online com Música (Grátis) — Foco para Estudos e Trabalho
-    </title>
-    <meta
-      name="description"
-      content="Cronômetro online gratuito com música de fundo. Ajuste minutos, pause, retome e personalize uma mensagem divertida enquanto o tempo roda. Ideal para estudos, trabalho e técnica Pomodoro."
-    />
-    <meta
-      name="keywords"
-      content="cronômetro online, timer online, pomodoro, estudar com música, produtividade, foco, cronometro com musica"
-    />
-    <link rel="canonical" href="https://seu-dominio.com/" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Cronômetro Online com Música (Grátis)" />
-    <meta
-      property="og:description"
-      content="Use o cronômetro online com música de fundo para manter o foco nos estudos e no trabalho."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://seu-dominio.com/" />
-    <meta property="og:image" content="https://seu-dominio.com/og-image.jpg" />
+  <title>
+    Cronômetro Online com Música (Grátis) — Foco para Estudos e Trabalho
+  </title>
+  <meta name="description"
+    content="Cronômetro online gratuito com música de fundo. Ajuste minutos, pause, retome e personalize uma mensagem divertida enquanto o tempo roda. Ideal para estudos, trabalho e técnica Pomodoro." />
+  <meta name="keywords"
+    content="cronômetro online, timer online, pomodoro, estudar com música, produtividade, foco, cronometro com musica" />
+  <link rel="canonical" href="https://cronometroweb.com/" />
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="Cronômetro Online com Música (Grátis)"
-    />
-    <meta
-      name="twitter:description"
-      content="Timer online gratuito com música ambiente e mensagens personalizáveis."
-    />
-    <meta name="twitter:image" content="https://seu-dominio.com/og-image.jpg" />
-    <meta name="theme-color" content="#0f172a" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="Cronômetro Online com Música (Grátis)" />
+  <meta property="og:description"
+    content="Use o cronômetro online com música de fundo para manter o foco nos estudos e no trabalho." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cronometroweb.com/" />
+  <meta property="og:image" content="https://cronometroweb.com/og-image.jpg" />
 
-    <!-- Favicon / Manifest (ajuste os caminhos conforme seu projeto) -->
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cronômetro Online com Música (Grátis)" />
+  <meta name="twitter:description" content="Timer online gratuito com música ambiente e mensagens personalizáveis." />
+  <meta name="twitter:image" content="https://cronometroweb.com/og-image.jpg" />
+  <meta name="theme-color" content="#0f172a" />
 
-    <!-- Estrutura de dados (JSON-LD) -->
-    <script type="application/ld+json">
+  <!-- Favicon / Manifest (ajuste os caminhos conforme seu projeto) -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Estrutura de dados (JSON-LD) -->
+  <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Cronômetro Online com Música",
-        "url": "https://seu-dominio.com/",
+        "url": "https://cronometroweb.com/",
         "applicationCategory": "Productivity",
         "operatingSystem": "Web",
         "description": "Cronômetro online gratuito com música de fundo, mensagens personalizadas e controles simples para focar em estudos e trabalho.",
@@ -64,453 +53,389 @@
       }
     </script>
 
-    <!-- Google AdSense (substitua pelo seu ID) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+  <!-- Google AdSense (substitua pelo seu ID) -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
-    <!-- Performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Tailwind CSS (base do shadcn/ui) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS (base do shadcn/ui) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Lucide Icons (usado pelo shadcn/ui) -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <!-- Lucide Icons (usado pelo shadcn/ui) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
-    <!-- YouTube Player API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- YouTube Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
-    <!-- Configuração do Tailwind para shadcn/ui -->
-    <script>
-      tailwind.config = {
-        darkMode: ["class"],
-        theme: {
-          extend: {
-            colors: {
-              border: "hsl(var(--border))",
-              input: "hsl(var(--input))",
-              ring: "hsl(var(--ring))",
-              background: "hsl(var(--background))",
-              foreground: "hsl(var(--foreground))",
-              primary: {
-                DEFAULT: "hsl(var(--primary))",
-                foreground: "hsl(var(--primary-foreground))",
-              },
-              secondary: {
-                DEFAULT: "hsl(var(--secondary))",
-                foreground: "hsl(var(--secondary-foreground))",
-              },
-              destructive: {
-                DEFAULT: "hsl(var(--destructive))",
-                foreground: "hsl(var(--destructive-foreground))",
-              },
-              muted: {
-                DEFAULT: "hsl(var(--muted))",
-                foreground: "hsl(var(--muted-foreground))",
-              },
-              accent: {
-                DEFAULT: "hsl(var(--accent))",
-                foreground: "hsl(var(--accent-foreground))",
-              },
-              popover: {
-                DEFAULT: "hsl(var(--popover))",
-                foreground: "hsl(var(--popover-foreground))",
-              },
-              card: {
-                DEFAULT: "hsl(var(--card))",
-                foreground: "hsl(var(--card-foreground))",
-              },
+  <!-- Configuração do Tailwind para shadcn/ui -->
+  <script>
+    tailwind.config = {
+      darkMode: ["class"],
+      theme: {
+        extend: {
+          colors: {
+            border: "hsl(var(--border))",
+            input: "hsl(var(--input))",
+            ring: "hsl(var(--ring))",
+            background: "hsl(var(--background))",
+            foreground: "hsl(var(--foreground))",
+            primary: {
+              DEFAULT: "hsl(var(--primary))",
+              foreground: "hsl(var(--primary-foreground))",
             },
-            borderRadius: {
-              lg: "var(--radius)",
-              md: "calc(var(--radius) - 2px)",
-              sm: "calc(var(--radius) - 4px)",
+            secondary: {
+              DEFAULT: "hsl(var(--secondary))",
+              foreground: "hsl(var(--secondary-foreground))",
+            },
+            destructive: {
+              DEFAULT: "hsl(var(--destructive))",
+              foreground: "hsl(var(--destructive-foreground))",
+            },
+            muted: {
+              DEFAULT: "hsl(var(--muted))",
+              foreground: "hsl(var(--muted-foreground))",
+            },
+            accent: {
+              DEFAULT: "hsl(var(--accent))",
+              foreground: "hsl(var(--accent-foreground))",
+            },
+            popover: {
+              DEFAULT: "hsl(var(--popover))",
+              foreground: "hsl(var(--popover-foreground))",
+            },
+            card: {
+              DEFAULT: "hsl(var(--card))",
+              foreground: "hsl(var(--card-foreground))",
             },
           },
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
         },
-      };
-    </script>
+      },
+    };
+  </script>
 
-    <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5291629791518646"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5291629791518646"
+    crossorigin="anonymous"></script>
+</head>
 
-  <body
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"
-  >
-    <a
-      href="#conteudo"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-yellow-400 focus:text-black focus:px-3 focus:py-1 focus:rounded"
-    >
-      Pular para o conteúdo
-    </a>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+  <a href="#conteudo"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-yellow-400 focus:text-black focus:px-3 focus:py-1 focus:rounded">
+    Pular para o conteúdo
+  </a>
 
-    <!-- Background dinâmico -->
-    <div
-      class="background-slideshow fixed inset-0 z-0"
-      id="backgroundSlideshow"
-    ></div>
-    <div
-      class="fixed inset-0 bg-gradient-to-br from-blue-900/80 via-slate-900/70 to-blue-900/80 z-10"
-    ></div>
+  <!-- Background dinâmico -->
+  <div class="background-slideshow fixed inset-0 z-0" id="backgroundSlideshow"></div>
+  <div class="fixed inset-0 bg-gradient-to-br from-blue-900/80 via-slate-900/70 to-blue-900/80 z-10"></div>
 
-    <main
-      id="conteudo"
-      class="relative z-20 min-h-screen flex flex-col items-center justify-center p-4"
-    >
-      <!-- Custom Image Display -->
-      <div id="customImageDisplay" class="hidden w-full max-w-4xl mb-6">
-        <div
-          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-4 shadow-2xl"
-        >
-          <img
-            id="displayedImage"
-            class="w-full object-contain rounded-lg shadow-lg"
-            alt="Imagem personalizada"
-          />
-        </div>
+  <main id="conteudo" class="relative z-20 min-h-screen flex flex-col items-center justify-center p-4">
+    <!-- Custom Image Display -->
+    <div id="customImageDisplay" class="hidden w-full max-w-4xl mb-6">
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-4 shadow-2xl">
+        <img id="displayedImage" class="w-full object-contain rounded-lg shadow-lg" alt="Imagem personalizada" />
       </div>
+    </div>
 
-      <!-- Timer Card -->
-      <div class="w-full max-w-2xl mb-8">
-        <div
-          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8 shadow-2xl"
-        >
-          <!-- Timer Display -->
-          <div class="text-center mb-8">
-            <div
-              id="timer"
-              aria-live="polite"
-              class="text-9xl md:text-9xl font-bold text-white mb-4 font-mono tracking-wider filter drop-shadow-lg bg-gradient-to-r from-white to-yellow-200 bg-clip-text text-transparent"
-            >
-              00:00
-            </div>
-            <div
-              id="timer-status"
-              class="text-white/70 text-sm font-medium"
-            ></div>
-
-            <!-- Aviso divertido DURANTE a execução -->
-            <div id="run-fun" class="run-fun hidden" aria-live="polite">
-              <div class="run-bubble">
-                <span class="run-emoji" aria-hidden="true">📢</span>
-                <span class="run-text">Voltamos já! ⏳</span>
-              </div>
-              <div class="run-loader" aria-hidden="true">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
+    <!-- Timer Card -->
+    <div class="w-full max-w-2xl mb-8">
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8 shadow-2xl">
+        <!-- Timer Display -->
+        <div class="text-center mb-8">
+          <div id="timer" aria-live="polite"
+            class="text-9xl md:text-9xl font-bold text-white mb-4 font-mono tracking-wider filter drop-shadow-lg bg-gradient-to-r from-white to-yellow-200 bg-clip-text text-transparent">
+            00:00
           </div>
+          <div id="timer-status" class="text-white/70 text-sm font-medium"></div>
 
-          <!-- Timer Controls -->
-          <div
-            class="timer-controls grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"
-          >
-            <button
-              data-action="adjust"
-              data-min="-1"
-              aria-label="Diminuir 1 minuto"
-              class="btn btn-secondary flex items-center justify-center gap-1 px-2 py-2 rounded-md font-medium transition-all duration-200 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs"
-            >
-              <i data-lucide="minus" class="w-3 h-3"></i>
-              1min
-            </button>
-
-            <button
-              data-action="adjust"
-              data-min="1"
-              aria-label="Aumentar 1 minuto"
-              class="btn btn-secondary flex items-center justify-center gap-1 px-2 py-2 rounded-md font-medium transition-all duration-200 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs"
-            >
-              <i data-lucide="plus" class="w-3 h-3"></i>
-              1min
-            </button>
-
-            <button
-              data-action="quick"
-              data-min="5"
-              class="btn btn-primary flex items-center justify-center gap-1 px-3 py-2 rounded-md font-medium transition-all duration-200 bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold shadow-lg"
-            >
-              <i data-lucide="clock" class="w-3 h-3"></i>
-              5min
-            </button>
-
-            <button
-              data-action="quick"
-              data-min="10"
-              class="btn btn-primary flex items-center justify-center gap-1 px-3 py-2 rounded-md font-medium transition-all duration-200 bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold shadow-lg"
-            >
-              <i data-lucide="clock" class="w-3 h-3"></i>
-              10min
-            </button>
-          </div>
-
-          <!-- Action buttons -->
-          <div class="flex gap-3 justify-center">
-            <button
-              data-action="start"
-              aria-label="Iniciar contador"
-              class="btn btn-success flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white shadow-lg"
-            >
-              <i data-lucide="play" class="w-5 h-5"></i>
-              Iniciar
-            </button>
-
-            <button
-              data-action="pause"
-              aria-label="Pausar contador"
-              class="btn btn-warning flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-orange-500 hover:bg-orange-600 text-white shadow-lg hidden"
-            >
-              <i data-lucide="pause" class="w-5 h-5"></i>
-              Pausar
-            </button>
-
-            <button
-              data-action="reset"
-              aria-label="Resetar contador"
-              class="btn btn-destructive flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg"
-            >
-              <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-              Resetar
-            </button>
+          <!-- Aviso divertido DURANTE a execução -->
+          <div id="run-fun" class="run-fun hidden" aria-live="polite">
+            <div class="run-bubble">
+              <span class="run-emoji" aria-hidden="true">📢</span>
+              <span class="run-text">Voltamos já! ⏳</span>
+            </div>
+            <div class="run-loader" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Novo Card para Tempo Personalizado -->
-      <div class="w-full max-w-2xl mt-8 mb-8">
-        <div
-          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8 shadow-2xl"
-        >
-          <div class="text-center mb-8">
-            <h2 class="text-2xl font-semibold text-white">
-              Definir Tempo Personalizado
-            </h2>
-            <p class="text-white/70 text-sm mt-2">
-              Digite o tempo desejado em minutos e inicie a contagem.
-            </p>
-          </div>
+        <!-- Timer Controls -->
+        <div class="timer-controls grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <button data-action="adjust" data-min="-1" aria-label="Diminuir 1 minuto"
+            class="btn btn-secondary flex items-center justify-center gap-1 px-2 py-2 rounded-md font-medium transition-all duration-200 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs">
+            <i data-lucide="minus" class="w-3 h-3"></i>
+            1min
+          </button>
 
-          <div class="w-full flex items-center justify-center gap-2 mb-6">
-            <input
-              type="number"
-              id="customTimeInput"
-              class="w-1/2 px-4 py-2 rounded-md text-white bg-slate-800 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              placeholder="Digite o tempo (min)"
-              min="1"
-              aria-label="Tempo personalizado"
-            />
-            <button
-              id="setCustomTime"
-              class="btn btn-primary px-3 py-2 rounded-md text-black bg-yellow-500 hover:bg-yellow-600"
-            >
-              Definir e Iniciar
-            </button>
-          </div>
+          <button data-action="adjust" data-min="1" aria-label="Aumentar 1 minuto"
+            class="btn btn-secondary flex items-center justify-center gap-1 px-2 py-2 rounded-md font-medium transition-all duration-200 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs">
+            <i data-lucide="plus" class="w-3 h-3"></i>
+            1min
+          </button>
+
+          <button data-action="quick" data-min="5"
+            class="btn btn-primary flex items-center justify-center gap-1 px-3 py-2 rounded-md font-medium transition-all duration-200 bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold shadow-lg">
+            <i data-lucide="clock" class="w-3 h-3"></i>
+            5min
+          </button>
+
+          <button data-action="quick" data-min="10"
+            class="btn btn-primary flex items-center justify-center gap-1 px-3 py-2 rounded-md font-medium transition-all duration-200 bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-semibold shadow-lg">
+            <i data-lucide="clock" class="w-3 h-3"></i>
+            10min
+          </button>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex gap-3 justify-center">
+          <button data-action="start" aria-label="Iniciar contador"
+            class="btn btn-success flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white shadow-lg">
+            <i data-lucide="play" class="w-5 h-5"></i>
+            Iniciar
+          </button>
+
+          <button data-action="pause" aria-label="Pausar contador"
+            class="btn btn-warning flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-orange-500 hover:bg-orange-600 text-white shadow-lg hidden">
+            <i data-lucide="pause" class="w-5 h-5"></i>
+            Pausar
+          </button>
+
+          <button data-action="reset" aria-label="Resetar contador"
+            class="btn btn-destructive flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg">
+            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+            Resetar
+          </button>
         </div>
       </div>
+    </div>
 
-      <!-- Music Card -->
-      <div class="w-full max-w-2xl mt-8 mb-8">
-        <section
-          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-2xl"
-          aria-label="Música de Fundo"
-        >
-          <div class="flex items-center gap-3 mb-6">
-            <i data-lucide="music" class="w-6 h-6 text-white"></i>
-            <h2 class="text-xl font-semibold text-white">Música de Fundo</h2>
-          </div>
+    <!-- Novo Card para Tempo Personalizado -->
+    <div class="w-full max-w-2xl mt-8 mb-8">
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8 shadow-2xl">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-semibold text-white">
+            Definir Tempo Personalizado
+          </h2>
+          <p class="text-white/70 text-sm mt-2">
+            Digite o tempo desejado em minutos e inicie a contagem.
+          </p>
+        </div>
 
-          <div class="space-y-4">
-            <!-- Music Select -->
-            <div>
-              <label class="sr-only" for="presetMusic">Músicas suaves</label>
-              <select
-                id="presetMusic"
-                class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent backdrop-blur-sm"
-              >
-                <option value="" class="bg-slate-800 text-white">
-                  🎵 Selecione uma música de fundo
-                </option>
-              </select>
-            </div>
-
-            <!-- Custom YouTube Link -->
-            <div>
-              <input
-                type="url"
-                id="youtubeLink"
-                placeholder="🔗 Cole o link do YouTube aqui"
-                class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent backdrop-blur-sm"
-              />
-            </div>
-
-            <!-- Music Controls -->
-            <div class="flex gap-3 justify-center">
-              <button
-                id="playCustom"
-                class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white shadow-lg"
-              >
-                <i data-lucide="play" class="w-4 h-4"></i>
-                Reproduzir
-              </button>
-
-              <button
-                id="stopMusic"
-                class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg"
-              >
-                <i data-lucide="square" class="w-4 h-4"></i>
-                Parar
-              </button>
-            </div>
-
-            <!-- Music Player -->
-            <div class="music-player-container mt-4 flex justify-center">
-              <div
-                id="musicPlayer"
-                class="rounded-lg shadow-lg"
-                style="width: 0; height: 0"
-              ></div>
-            </div>
-
-            <!-- Music Status -->
-            <div
-              id="musicStatus"
-              class="text-center text-white/70 text-sm"
-            ></div>
-
-            <!-- Run Text – Seleção de mensagem (carregada via JSON) -->
-            <div class="mt-6">
-              <div class="flex items-center gap-2 mb-2">
-                <i
-                  data-lucide="message-circle"
-                  class="w-5 h-5 text-white/90"
-                ></i>
-                <h3 class="text-white font-semibold">
-                  Mensagem durante a execução
-                </h3>
-              </div>
-
-              <!-- Opções criadas via JS -->
-              <div id="messageOptions" class="msg-options"></div>
-
-              <p class="text-white/60 text-xs mt-2">
-                Essa mensagem aparece abaixo do cronômetro enquanto o timer está
-                em execução.
-              </p>
-            </div>
-          </div>
-        </section>
+        <div class="w-full flex items-center justify-center gap-2 mb-6">
+          <input type="number" id="customTimeInput"
+            class="w-1/2 px-4 py-2 rounded-md text-white bg-slate-800 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            placeholder="Digite o tempo (min)" min="1" aria-label="Tempo personalizado" />
+          <button id="setCustomTime"
+            class="btn btn-primary px-3 py-2 rounded-md text-black bg-yellow-500 hover:bg-yellow-600">
+            Definir e Iniciar
+          </button>
+        </div>
       </div>
+    </div>
 
-      <!-- Bloco de texto para SEO -->
-      <section class="mt-10 w-full max-w-3xl text-center text-white/90">
-        <h2 class="text-lg font-semibold">
-          Por que usar nosso cronômetro online?
-        </h2>
-        <p class="mt-2">
-          Ideal para <strong>estudos</strong>, <strong>home office</strong> e
-          <strong>técnicas de produtividade</strong> como Pomodoro. Combine o
-          timer com <em>músicas relaxantes</em> e uma mensagem motivacional para
-          manter o foco.
-        </p>
-      </section>
+    <!-- Music Card -->
+    <div class="w-full max-w-2xl mt-8 mb-8">
+      <section class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-2xl"
+        aria-label="Música de Fundo">
+        <div class="flex items-center gap-3 mb-6">
+          <i data-lucide="music" class="w-6 h-6 text-white"></i>
+          <h2 class="text-xl font-semibold text-white">Música de Fundo</h2>
+        </div>
 
-      <!-- Image Upload Card -->
-      <div class="w-full max-w-2xl mt-8 mb-8">
-        <section
-          class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-2xl"
-          aria-label="Upload de Imagem de Fundo"
-        >
-          <div class="flex items-center gap-3 mb-6">
-            <i data-lucide="image" class="w-6 h-6 text-white"></i>
-            <h2 class="text-xl font-semibold text-white">
-              Imagem de Fundo Personalizada
-            </h2>
+        <div class="space-y-4">
+          <!-- Music Select -->
+          <div>
+            <label class="sr-only" for="presetMusic">Músicas suaves</label>
+            <select id="presetMusic"
+              class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent backdrop-blur-sm">
+              <option value="" class="bg-slate-800 text-white">
+                🎵 Selecione uma música de fundo
+              </option>
+            </select>
           </div>
 
-          <div class="space-y-4">
+          <!-- Custom YouTube Link -->
+          <div>
+            <input type="url" id="youtubeLink" placeholder="🔗 Cole o link do YouTube aqui"
+              class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent backdrop-blur-sm" />
+          </div>
+
+          <!-- MP3 Upload Section -->
+          <div class="border-t border-white/20 pt-4">
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="file-audio" class="w-5 h-5 text-white/90"></i>
+              <h3 class="text-white font-semibold">Arquivo MP3 Personalizado</h3>
+            </div>
+
             <!-- Upload Area -->
             <div
-              class="border-2 border-dashed border-white/30 rounded-lg p-6 text-center hover:border-white/50 transition-colors"
-            >
-              <input
-                type="file"
-                id="imageUpload"
-                accept="image/*"
-                class="hidden"
-              />
-              <label
-                for="imageUpload"
-                class="cursor-pointer flex flex-col items-center gap-3"
-              >
-                <i data-lucide="upload" class="w-12 h-12 text-white/70"></i>
+              class="border-2 border-dashed border-white/30 rounded-lg p-4 text-center hover:border-white/50 transition-colors mb-3">
+              <input type="file" id="mp3Upload" accept="audio/mp3,audio/mpeg" class="hidden" />
+              <label for="mp3Upload" class="cursor-pointer flex flex-col items-center gap-2">
+                <i data-lucide="upload" class="w-8 h-8 text-white/70"></i>
                 <div class="text-white">
-                  <p class="font-medium">
-                    Clique para fazer upload de uma imagem
-                  </p>
-                  <p class="text-sm text-white/70 mt-1">
-                    PNG, JPG, GIF até 5MB
-                  </p>
+                  <p class="font-medium text-sm">Clique para fazer upload de um MP3</p>
+                  <p class="text-xs text-white/70 mt-1">Máximo 10MB</p>
                 </div>
               </label>
             </div>
 
-            <!-- Image Preview -->
-            <div id="imagePreview" class="hidden">
-              <img
-                id="previewImg"
-                class="w-full max-h-48 object-cover rounded-lg shadow-lg"
-                alt="Preview da imagem"
-              />
+            <!-- MP3 Player and Controls -->
+            <div id="mp3PlayerSection" class="hidden space-y-3">
+              <div class="bg-white/5 rounded-lg p-3">
+                <div id="mp3Info" class="text-white text-sm mb-2"></div>
+                <audio id="mp3Player" controls class="w-full">
+                  Seu navegador não suporta o elemento de áudio.
+                </audio>
+              </div>
+
+              <div class="flex gap-2 justify-center">
+                <button id="playMp3"
+                  class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white shadow-lg text-sm">
+                  <i data-lucide="play" class="w-4 h-4"></i>
+                  Reproduzir MP3
+                </button>
+
+                <button id="removeMp3"
+                  class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg text-sm">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  Remover MP3
+                </button>
+              </div>
             </div>
 
-            <!-- Controls -->
-            <div class="flex gap-3 justify-center">
-              <button
-                id="applyImage"
-                class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-blue-600 hover:bg-blue-700 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled
-              >
-                <i data-lucide="check" class="w-4 h-4"></i>
-                Aplicar Imagem
-              </button>
-
-              <button
-                id="removeImage"
-                class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg"
-              >
-                <i data-lucide="x" class="w-4 h-4"></i>
-                Remover Imagem
-              </button>
-            </div>
-
-            <!-- Status -->
-            <div
-              id="imageStatus"
-              class="text-center text-white/70 text-sm"
-            ></div>
+            <!-- MP3 Status -->
+            <div id="mp3Status" class="text-center text-white/70 text-sm mt-2"></div>
           </div>
-        </section>
-      </div>
 
-      <!-- AD abaixo do conteúdo principal -->
-      <div class="w-full max-w-4xl mt-10">
-        <div
-          id="ad-bottom"
-          class="w-full min-h-[90px] rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-white/60 text-sm"
-        >
-          <!-- Substitua pelo seu bloco de anúncio -->
-          <!--
+          <!-- Music Controls -->
+          <div class="flex gap-3 justify-center">
+            <button id="playCustom"
+              class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-green-600 hover:bg-green-700 text-white shadow-lg">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              Reproduzir
+            </button>
+
+            <button id="stopMusic"
+              class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg">
+              <i data-lucide="square" class="w-4 h-4"></i>
+              Parar
+            </button>
+          </div>
+
+          <!-- Music Player -->
+          <div class="music-player-container mt-4 flex justify-center">
+            <div id="musicPlayer" class="rounded-lg shadow-lg" style="width: 0; height: 0"></div>
+          </div>
+
+          <!-- Music Status -->
+          <div id="musicStatus" class="text-center text-white/70 text-sm"></div>
+
+          <!-- Run Text – Seleção de mensagem (carregada via JSON) -->
+          <div class="mt-6">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="message-circle" class="w-5 h-5 text-white/90"></i>
+              <h3 class="text-white font-semibold">
+                Mensagem durante a execução
+              </h3>
+            </div>
+
+            <!-- Opções criadas via JS -->
+            <div id="messageOptions" class="msg-options"></div>
+
+            <p class="text-white/60 text-xs mt-2">
+              Essa mensagem aparece abaixo do cronômetro enquanto o timer está
+              em execução.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bloco de texto para SEO -->
+    <section class="mt-10 w-full max-w-3xl text-center text-white/90">
+      <h2 class="text-lg font-semibold">
+        Por que usar nosso cronômetro online?
+      </h2>
+      <p class="mt-2">
+        Ideal para <strong>estudos</strong>, <strong>home office</strong> e
+        <strong>técnicas de produtividade</strong> como Pomodoro. Combine o
+        timer com <em>músicas relaxantes</em> e uma mensagem motivacional para
+        manter o foco.
+      </p>
+    </section>
+
+    <!-- Image Upload Card -->
+    <div class="w-full max-w-2xl mt-8 mb-8">
+      <section class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-2xl"
+        aria-label="Upload de Imagem de Fundo">
+        <div class="flex items-center gap-3 mb-6">
+          <i data-lucide="image" class="w-6 h-6 text-white"></i>
+          <h2 class="text-xl font-semibold text-white">
+            Imagem de Fundo Personalizada
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Upload Area -->
+          <div
+            class="border-2 border-dashed border-white/30 rounded-lg p-6 text-center hover:border-white/50 transition-colors">
+            <input type="file" id="imageUpload" accept="image/*" class="hidden" />
+            <label for="imageUpload" class="cursor-pointer flex flex-col items-center gap-3">
+              <i data-lucide="upload" class="w-12 h-12 text-white/70"></i>
+              <div class="text-white">
+                <p class="font-medium">
+                  Clique para fazer upload de uma imagem
+                </p>
+                <p class="text-sm text-white/70 mt-1">
+                  PNG, JPG, GIF até 5MB
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <!-- Image Preview -->
+          <div id="imagePreview" class="hidden">
+            <img id="previewImg" class="w-full max-h-48 object-cover rounded-lg shadow-lg" alt="Preview da imagem" />
+          </div>
+
+          <!-- Controls -->
+          <div class="flex gap-3 justify-center">
+            <button id="applyImage"
+              class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-blue-600 hover:bg-blue-700 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled>
+              <i data-lucide="check" class="w-4 h-4"></i>
+              Aplicar Imagem
+            </button>
+
+            <button id="removeImage"
+              class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-red-600 hover:bg-red-700 text-white shadow-lg">
+              <i data-lucide="x" class="w-4 h-4"></i>
+              Remover Imagem
+            </button>
+          </div>
+
+          <!-- Status -->
+          <div id="imageStatus" class="text-center text-white/70 text-sm"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- AD abaixo do conteúdo principal -->
+    <div class="w-full max-w-4xl mt-10">
+      <div id="ad-bottom"
+        class="w-full min-h-[90px] rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-white/60 text-sm">
+        <!-- Substitua pelo seu bloco de anúncio -->
+        <!--
           <ins class="adsbygoogle"
                 style="display:block"
                 data-ad-client="ca-pub-XXXXXXXXXXXXXXX"
@@ -519,47 +444,48 @@
                 data-full-width-responsive="true"></ins>
           <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
           -->
-          Espaço para anúncio
-        </div>
+        Espaço para anúncio
       </div>
-    </main>
+    </div>
+  </main>
 
-    <footer class="relative z-20 w-full mt-16 mb-6">
-      <div class="max-w-4xl mx-auto px-4 text-center text-white/60 text-sm">
-        <p>
-          © <span id="year"></span> Cronômetro Online com Música — Gratuito e
-          sem cadastro.
-        </p>
-      </div>
-    </footer>
+  <footer class="relative z-20 w-full mt-16 mb-6">
+    <div class="max-w-4xl mx-auto px-4 text-center text-white/60 text-sm">
+      <p>
+        © <span id="year"></span> Cronômetro Online com Música — Gratuito e
+        sem cadastro.
+      </p>
+    </div>
+  </footer>
 
-    <!-- Cache Status Indicator -->
-    <div class="cache-indicator" id="cacheIndicator"></div>
+  <!-- Cache Status Indicator -->
+  <div class="cache-indicator" id="cacheIndicator"></div>
 
-    <!-- Scripts principais -->
-    <script src="app.js"></script>
+  <!-- Scripts principais -->
+  <script src="app.js"></script>
 
-    <!-- Inicializar ícones e pequenos helpers -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        if (typeof lucide !== "undefined") {
-          lucide.createIcons();
-        }
-        const y = document.getElementById("year");
-        if (y) y.textContent = new Date().getFullYear();
-      });
+  <!-- Inicializar ícones e pequenos helpers -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof lucide !== "undefined") {
+        lucide.createIcons();
+      }
+      const y = document.getElementById("year");
+      if (y) y.textContent = new Date().getFullYear();
+    });
 
-      window.addEventListener("beforeunload", () => {
-        if (typeof saveTimerState === "function") {
-          saveTimerState();
-        }
-      });
+    window.addEventListener("beforeunload", () => {
+      if (typeof saveTimerState === "function") {
+        saveTimerState();
+      }
+    });
 
-      // Noscript fallback para SEO/acessibilidade
-      document.body.insertAdjacentHTML(
-        "beforeend",
-        '<noscript><div style="color:#fff;text-align:center;margin:16px">Ative o JavaScript para usar o cronômetro.</div></noscript>'
-      );
-    </script>
-  </body>
+    // Noscript fallback para SEO/acessibilidade
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      '<noscript><div style="color:#fff;text-align:center;margin:16px">Ative o JavaScript para usar o cronômetro.</div></noscript>'
+    );
+  </script>
+</body>
+
 </html>
