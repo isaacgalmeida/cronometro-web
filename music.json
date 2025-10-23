@@ -447,6 +447,14 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=23V62ZPpEMw&list=RD23V62ZPpEMw&start_radio=1",
       "category": "mpb",
       "duration": "Mix contínuo"
+    },
+    {
+      "id": 57,
+      "title": "🎵 Kool & The Gang - Celebration",
+      "description": "Kool & The Gang - Celebration",
+      "youtubeUrl": "https://youtu.be/cIg6odS-fA0?si=5Lc4GwNhY01QmomL",
+      "category": "geral",
+      "duration": "3 minutos e 35 segundos"
     }
   ]
 }
