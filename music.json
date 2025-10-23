@@ -455,6 +455,14 @@
       "youtubeUrl": "https://youtu.be/cIg6odS-fA0?si=5Lc4GwNhY01QmomL",
       "category": "geral",
       "duration": "3 minutos e 35 segundos"
+    },
+    {
+      "id": 58,
+      "title": "🎹 Coldplay - Soft Piano",
+      "description": "Coldplay - Soft Piano Collection",
+      "youtubeUrl": "https://www.youtube.com/watch?v=CzVNX_fErcE",
+      "category": "piano",
+      "duration": "31 minutos e 4 segundos"
     }
   ]
 }
