@@ -463,6 +463,14 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=CzVNX_fErcE",
       "category": "piano",
       "duration": "31 minutos e 4 segundos"
+    },
+    {
+      "id": 59,
+      "title": "🎵 Best Songs of ThePianoGuys",
+      "description": "Best Songs of ThePianoGuys",
+      "youtubeUrl": "https://youtu.be/3GNiCfPbyiQ?si=JZiUkICEFQ30ho76",
+      "category": "geral",
+      "duration": "1 hora e 19 minutos"
     }
   ]
 }
