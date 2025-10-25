@@ -122,6 +122,12 @@ select option {
 }
 
 /* Button States */
+.btn {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -133,6 +139,13 @@ select option {
 
 .btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+/* Ensure action buttons are always clickable */
+button[data-action] {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto !important;
 }
 
 /* Status Messages */

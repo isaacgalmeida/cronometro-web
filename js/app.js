@@ -209,7 +209,7 @@ function setupMusicCallbacks() {
 /**
  * Reset completo da aplicação
  */
-function resetAllEffectsAndMusic() {
+async function resetAllEffectsAndMusic() {
   console.log('Resetando todos os efeitos e música...');
 
   // Para todos os efeitos
@@ -226,12 +226,12 @@ function resetAllEffectsAndMusic() {
   // Reseta configurações
   resetRunMessageSelection();
 
-  // Limpa TODO o localStorage
-  clearAllCache();
+  // Limpa TODO o localStorage e IndexedDB
+  await clearAllCache();
 
-  showMusicStatus('🔄 Reset completo realizado - localStorage limpo');
+  showMusicStatus('🔄 Reset completo realizado - Cache limpo');
 
-  console.log('Reset completo finalizado - localStorage limpo');
+  console.log('Reset completo finalizado - Cache limpo');
 }
 
 // Torna função de reset disponível globalmente para compatibilidade

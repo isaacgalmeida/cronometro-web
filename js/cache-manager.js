@@ -236,7 +236,7 @@ export function removeConfig(key) {
 /**
  * Limpa todo o localStorage relacionado ao cronômetro
  */
-export function clearAllCache() {
+export async function clearAllCache() {
   try {
     // Remove todas as chaves específicas do cronômetro
     Object.values(CACHE_KEYS).forEach(key => {
@@ -256,11 +256,20 @@ export function clearAllCache() {
       localStorage.removeItem(key);
     });
 
-    console.log('Todo o localStorage do cronômetro foi limpo');
-    showCacheStatus('🗑️ Todo o localStorage foi limpo', 'info');
+    // Limpa também o IndexedDB do MP3
+    try {
+      const { clearMp3Data } = await import('./mp3-manager.js');
+      await clearMp3Data();
+      console.log('IndexedDB do MP3 também foi limpo');
+    } catch (error) {
+      console.error('Erro ao limpar IndexedDB do MP3:', error);
+    }
+
+    console.log('Todo o localStorage e IndexedDB do cronômetro foram limpos');
+    showCacheStatus('🗑️ Todo o cache foi limpo (localStorage + IndexedDB)', 'info');
   } catch (error) {
-    console.error('Erro ao limpar localStorage:', error);
-    showCacheStatus('❌ Erro ao limpar localStorage', 'error');
+    console.error('Erro ao limpar cache:', error);
+    showCacheStatus('❌ Erro ao limpar cache', 'error');
   }
 }
 

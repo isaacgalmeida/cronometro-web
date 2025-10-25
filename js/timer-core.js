@@ -177,9 +177,9 @@ export function stopTimer() {
 }
 
 /**
- * Reseta o timer
+ * Reseta apenas o estado do timer (não limpa configurações)
  */
-export function resetTimer() {
+export function resetTimerOnly() {
   clearInterval(countdown);
   isRunning = false;
   timeLeft = 0;
@@ -191,8 +191,35 @@ export function resetTimer() {
   triggerEvent('onStop', state);
   triggerEvent('onTick', state);
 
-  // Para reset completo, limpa TODO o localStorage
-  clearAllCache();
+  // Limpa apenas o estado do timer (mantém outras configurações)
+  clearTimerCache();
+
+  console.log('Timer resetado (apenas estado do cronômetro)');
+}
+
+/**
+ * Reseta o timer completo (função legada para compatibilidade)
+ */
+export async function resetTimer() {
+  clearInterval(countdown);
+  isRunning = false;
+  timeLeft = 0;
+  startTime = null;
+  pausedTime = 0;
+  endTimestamp = null;
+
+  const state = getTimerState();
+  triggerEvent('onStop', state);
+  triggerEvent('onTick', state);
+
+  // Para reset completo, limpa TODO o localStorage e IndexedDB
+  await clearAllCache();
+
+  // Refresh automático da página após 3 segundos
+  setTimeout(() => {
+    console.log('Recarregando página após reset completo...');
+    window.location.reload();
+  }, 3000);
 }
 
 /**

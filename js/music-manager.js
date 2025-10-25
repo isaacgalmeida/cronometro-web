@@ -471,6 +471,16 @@ function playYouTubeFallback(url, videoId) {
  */
 export function pauseMusic() {
   try {
+    // Pausa MP3 se estiver selecionado
+    if (musicState.currentUrl === 'mp3://custom') {
+      console.log('🎵 Pausing MP3 music');
+      pauseMp3();
+      setMusicPlaying(false);
+      triggerEvent('onMusicPause', getMusicState());
+      return;
+    }
+
+    // Pausa YouTube via API
     if (youtubePlayer && youtubePlayer.pauseVideo && isYouTubeAPIReady) {
       youtubePlayer.pauseVideo();
       setMusicPlaying(false);
@@ -504,6 +514,16 @@ export function pauseMusic() {
  */
 export function resumeMusic() {
   try {
+    // Retoma MP3 se estiver selecionado
+    if (musicState.currentUrl === 'mp3://custom') {
+      console.log('🎵 Resuming MP3 music');
+      resumeMp3();
+      setMusicPlaying(true);
+      triggerEvent('onMusicStart', getMusicState());
+      return;
+    }
+
+    // Retoma YouTube via API
     if (youtubePlayer && youtubePlayer.playVideo && isYouTubeAPIReady && musicState.isPlaying === false) {
       youtubePlayer.playVideo();
 
@@ -672,7 +692,14 @@ export function syncMusicWithTimer(action) {
             console.log('Music already playing - no action needed');
           } else {
             console.log('Starting music playback');
-            playYouTube(selectedUrl);
+            if (selectedUrl === 'mp3://custom') {
+              console.log('🎵 Starting MP3 music via timer sync');
+              playMp3();
+              setMusicPlaying(true);
+              triggerEvent('onMusicStart', getMusicState());
+            } else {
+              playYouTube(selectedUrl);
+            }
           }
         }
         break;

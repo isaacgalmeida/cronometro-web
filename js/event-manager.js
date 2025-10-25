@@ -7,6 +7,7 @@ import {
   startCurrentTimer,
   pauseTimer,
   resetTimer,
+  resetTimerOnly,
   adjustTimer
 } from './timer-core.js';
 
@@ -17,6 +18,7 @@ import {
   detectSelectedMusic
 } from './music-manager.js';
 
+import { clearAllCache } from './cache-manager.js';
 import { debounce } from './utils.js';
 
 /**
@@ -26,6 +28,7 @@ export function initializeEventListeners() {
   initializeTimerControls();
   initializeMusicControls();
   initializeCustomTimeControls();
+  initializeBackToTopButton();
 }
 
 /**
@@ -54,7 +57,10 @@ function initializeTimerControls() {
           pauseTimer();
           break;
         case 'reset':
-          resetTimer();
+          handleResetAllConfigurations();
+          break;
+        case 'reset-timer':
+          resetTimerOnly();
           break;
       }
     });
@@ -64,10 +70,12 @@ function initializeTimerControls() {
   const startBtn = document.querySelector('[data-action="start"]');
   const pauseBtn = document.querySelector('[data-action="pause"]');
   const resetBtn = document.querySelector('[data-action="reset"]');
+  const resetTimerBtn = document.querySelector('[data-action="reset-timer"]');
 
   if (startBtn) startBtn.addEventListener('click', startCurrentTimer);
   if (pauseBtn) pauseBtn.addEventListener('click', pauseTimer);
-  if (resetBtn) resetBtn.addEventListener('click', resetTimer);
+  if (resetBtn) resetBtn.addEventListener('click', handleResetAllConfigurations);
+  if (resetTimerBtn) resetTimerBtn.addEventListener('click', resetTimerOnly);
 }
 
 /**
@@ -203,7 +211,7 @@ export function initializeKeyboardShortcuts() {
         break;
       case 'r': // R para resetar
         e.preventDefault();
-        resetTimer();
+        resetTimerOnly();
         break;
       case '1': // 1 para 5 minutos
         e.preventDefault();
@@ -223,4 +231,57 @@ export function initializeKeyboardShortcuts() {
         break;
     }
   });
+}
+
+/**
+ * Inicializa o botão "Voltar ao Topo"
+ */
+function initializeBackToTopButton() {
+  const backToTopBtn = document.getElementById('backToTop');
+
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+}
+
+/**
+ * Lida com o reset completo de todas as configurações
+ */
+async function handleResetAllConfigurations() {
+  const confirmed = confirm(
+    'Tem certeza que deseja resetar TODAS as configurações?\n\n' +
+    'Isso irá remover:\n' +
+    '• Todas as configurações salvas\n' +
+    '• Músicas e imagens personalizadas\n' +
+    '• Preferências de efeitos\n' +
+    '• Dados do cronômetro\n\n' +
+    'Esta ação não pode ser desfeita!'
+  );
+
+  if (confirmed) {
+    try {
+      // Para o timer se estiver rodando
+      resetTimer();
+
+      // Limpa todo o cache
+      await clearAllCache();
+
+      // Mostra mensagem de sucesso
+      alert('✅ Todas as configurações foram resetadas!\n\nA página será recarregada em 3 segundos...');
+
+      // Recarrega a página após 3 segundos
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+
+    } catch (error) {
+      console.error('Erro ao resetar configurações:', error);
+      alert('❌ Erro ao resetar configurações. Tente novamente.');
+    }
+  }
 }
