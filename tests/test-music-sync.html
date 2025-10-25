@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Sincronização Música-Timer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      .warning {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      button {
+        margin: 5px;
+        padding: 10px 15px;
+      }
+      .timer-display {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+      .music-player {
+        margin: 20px 0;
+        min-height: 200px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      input[type="url"] {
+        width: 400px;
+        padding: 8px;
+        margin: 5px;
+      }
+      .test-step {
+        margin: 10px 0;
+        padding: 10px;
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎵⏱️ Teste de Sincronização Música-Timer</h1>
+
+    <div class="test-section">
+      <h3>Cenário de Teste</h3>
+      <p>
+        Este teste valida se a música sincroniza corretamente com o timer em
+        todos os cenários:
+      </p>
+      <ul>
+        <li>✅ Timer inicia → Música inicia</li>
+        <li>✅ Timer pausa → Música pausa</li>
+        <li>✅ Timer retoma → Música retoma</li>
+        <li>✅ F5 com timer rodando → Música inicia automaticamente</li>
+        <li>✅ F5 com timer pausado → Música carregada mas não toca</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h3>1. Configuração da Música</h3>
+      <input
+        type="url"
+        id="youtubeUrl"
+        placeholder="Cole aqui a URL do YouTube"
+        value="https://www.youtube.com/watch?v=jfKfPfyJRdk"
+      />
+      <br />
+      <button onclick="setupMusic()">Configurar Música</button>
+      <button onclick="clearMusic()">Limpar Música</button>
+    </div>
+
+    <div class="test-section">
+      <h3>2. Controles do Timer</h3>
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div id="timerStatus">Timer parado</div>
+      <br />
+      <button onclick="startTimer5Min()">Iniciar 5min</button>
+      <button onclick="pauseTimer()">Pausar</button>
+      <button onclick="resumeTimer()">Retomar</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <div class="test-section">
+      <h3>3. Player de Música</h3>
+      <div id="musicPlayer" class="music-player"></div>
+      <div id="musicStatus"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>4. Testes Automáticos</h3>
+      <div class="test-step">
+        <strong>Teste 1:</strong> Configurar música + Iniciar timer
+        <button onclick="runTest1()">Executar Teste 1</button>
+      </div>
+      <div class="test-step">
+        <strong>Teste 2:</strong> Pausar timer (música deve pausar)
+        <button onclick="runTest2()">Executar Teste 2</button>
+      </div>
+      <div class="test-step">
+        <strong>Teste 3:</strong> Retomar timer (música deve retomar)
+        <button onclick="runTest3()">Executar Teste 3</button>
+      </div>
+      <div class="test-step">
+        <strong>Teste 4:</strong> Simular F5 com timer rodando
+        <button onclick="runTest4()">Executar Teste 4</button>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h3>5. Log de Eventos</h3>
+      <button onclick="clearLog()">Limpar Log</button>
+      <div id="eventLog"></div>
+    </div>
+
+    <script type="module">
+      // Importa os módulos necessários
+      import {
+        startTimer as coreStartTimer,
+        startCurrentTimer as coreStartCurrentTimer,
+        pauseTimer as corePauseTimer,
+        resetTimer as coreResetTimer,
+        getTimerState,
+        onTimerEvent,
+      } from "../js/timer-core.js";
+
+      import {
+        loadBackgroundMusic,
+        detectSelectedMusic,
+        playYouTube,
+        restoreMusicState,
+        syncMusicWithTimer,
+        getMusicState,
+        onMusicEvent,
+        clearMusicSelection,
+      } from "../js/music-manager.js";
+
+      import {
+        enablePersistence,
+        loadMusicState,
+        saveMusicState,
+        clearMusicCache,
+      } from "../js/cache-manager.js";
+
+      import { showMusicStatus } from "../js/ui-manager.js";
+
+      // Habilita persistência
+      enablePersistence();
+
+      // Elementos da interface
+      const timerDisplay = document.getElementById("timerDisplay");
+      const timerStatus = document.getElementById("timerStatus");
+      const youtubeUrl = document.getElementById("youtubeUrl");
+      const eventLog = document.getElementById("eventLog");
+
+      // Log de eventos
+      function logEvent(message, type = "info") {
+        const div = document.createElement("div");
+        div.className = `status ${type}`;
+        div.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+        eventLog.appendChild(div);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Atualiza display do timer
+      function updateDisplay() {
+        const state = getTimerState();
+        timerDisplay.textContent = state.formattedTime;
+        timerStatus.textContent = state.isRunning
+          ? "Timer rodando"
+          : state.timeLeft > 0
+          ? "Timer pausado"
+          : "Timer parado";
+      }
+
+      // Configura callbacks do timer
+      onTimerEvent("onTick", updateDisplay);
+      onTimerEvent("onStart", () => {
+        logEvent("🟢 Timer INICIADO - Música deve iniciar", "success");
+        updateDisplay();
+      });
+      onTimerEvent("onPause", () => {
+        logEvent("🟡 Timer PAUSADO - Música deve pausar", "warning");
+        updateDisplay();
+      });
+      onTimerEvent("onStop", () => {
+        logEvent("🔴 Timer PARADO - Música deve parar", "error");
+        updateDisplay();
+      });
+
+      // Configura callbacks da música
+      onMusicEvent("onMusicStart", () => {
+        logEvent("🎵 Música INICIADA", "success");
+      });
+      onMusicEvent("onMusicPause", () => {
+        logEvent("⏸️ Música PAUSADA", "warning");
+      });
+      onMusicEvent("onMusicStop", () => {
+        logEvent("🔇 Música PARADA", "error");
+      });
+      onMusicEvent("onMusicError", (error) => {
+        logEvent(`❌ Erro na música: ${error}`, "error");
+      });
+
+      // Funções de controle (disponíveis globalmente)
+      window.setupMusic = async () => {
+        const url = youtubeUrl.value.trim();
+        if (!url) {
+          logEvent("❌ Por favor, insira uma URL do YouTube", "error");
+          return;
+        }
+
+        try {
+          logEvent("🎵 Configurando música...", "info");
+          await loadBackgroundMusic();
+
+          // Simula seleção de música personalizada
+          const customInput = document.getElementById("youtubeLink");
+          if (!customInput) {
+            // Cria input temporário para detectSelectedMusic funcionar
+            const tempInput = document.createElement("input");
+            tempInput.id = "youtubeLink";
+            tempInput.value = url;
+            tempInput.style.display = "none";
+            document.body.appendChild(tempInput);
+          }
+
+          document.getElementById("youtubeLink").value = url;
+          detectSelectedMusic();
+
+          logEvent(`✅ Música configurada: ${url}`, "success");
+        } catch (error) {
+          logEvent(`❌ Erro ao configurar música: ${error.message}`, "error");
+        }
+      };
+
+      window.clearMusic = () => {
+        clearMusicSelection();
+        clearMusicCache();
+        logEvent("🗑️ Música limpa", "info");
+      };
+
+      window.startTimer5Min = () => {
+        logEvent("▶️ Iniciando timer de 5 minutos...", "info");
+        coreStartTimer(5);
+      };
+
+      window.pauseTimer = () => {
+        logEvent("⏸️ Pausando timer...", "info");
+        corePauseTimer();
+      };
+
+      window.resumeTimer = () => {
+        logEvent("▶️ Retomando timer...", "info");
+        coreStartCurrentTimer();
+      };
+
+      window.resetTimer = () => {
+        logEvent("🔄 Resetando timer...", "info");
+        coreResetTimer();
+      };
+
+      window.clearLog = () => {
+        eventLog.innerHTML = "";
+      };
+
+      // Testes automatizados
+      window.runTest1 = async () => {
+        logEvent("🧪 TESTE 1: Configurar música + Iniciar timer", "info");
+
+        await setupMusic();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        startTimer5Min();
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const musicState = getMusicState();
+        if (musicState.isPlaying) {
+          logEvent("✅ TESTE 1 PASSOU: Música iniciou com o timer", "success");
+        } else {
+          logEvent(
+            "❌ TESTE 1 FALHOU: Música não iniciou com o timer",
+            "error"
+          );
+        }
+      };
+
+      window.runTest2 = async () => {
+        logEvent("🧪 TESTE 2: Pausar timer (música deve pausar)", "info");
+
+        pauseTimer();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const musicState = getMusicState();
+        if (!musicState.isPlaying) {
+          logEvent("✅ TESTE 2 PASSOU: Música pausou com o timer", "success");
+        } else {
+          logEvent("❌ TESTE 2 FALHOU: Música não pausou com o timer", "error");
+        }
+      };
+
+      window.runTest3 = async () => {
+        logEvent("🧪 TESTE 3: Retomar timer (música deve retomar)", "info");
+
+        resumeTimer();
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const musicState = getMusicState();
+        if (musicState.isPlaying) {
+          logEvent("✅ TESTE 3 PASSOU: Música retomou com o timer", "success");
+        } else {
+          logEvent(
+            "❌ TESTE 3 FALHOU: Música não retomou com o timer",
+            "error"
+          );
+        }
+      };
+
+      window.runTest4 = async () => {
+        logEvent("🧪 TESTE 4: Simular F5 com timer rodando", "info");
+        logEvent(
+          "💡 Para testar F5 real: Configure música, inicie timer, pressione F5",
+          "info"
+        );
+
+        // Simula o processo de F5
+        const timerState = getTimerState();
+        if (timerState.isRunning) {
+          // Simula salvamento no localStorage
+          const musicState = getMusicState();
+          if (musicState.isSelected) {
+            const savedState = {
+              currentUrl: musicState.currentUrl,
+              isSelected: true,
+              timestamp: Date.now(),
+            };
+
+            // Simula restauração após F5
+            logEvent("🔄 Simulando restauração após F5...", "info");
+
+            setTimeout(async () => {
+              const restored = restoreMusicState(savedState);
+              if (restored) {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+                syncMusicWithTimer("start");
+
+                setTimeout(() => {
+                  const currentMusicState = getMusicState();
+                  if (currentMusicState.isPlaying) {
+                    logEvent(
+                      "✅ TESTE 4 PASSOU: Música iniciou após simulação de F5",
+                      "success"
+                    );
+                  } else {
+                    logEvent(
+                      "❌ TESTE 4 FALHOU: Música não iniciou após simulação de F5",
+                      "error"
+                    );
+                  }
+                }, 2000);
+              }
+            }, 1000);
+          } else {
+            logEvent("❌ TESTE 4: Nenhuma música configurada", "error");
+          }
+        } else {
+          logEvent("❌ TESTE 4: Timer não está rodando", "error");
+        }
+      };
+
+      // Inicialização
+      async function initialize() {
+        try {
+          logEvent("🚀 Inicializando teste de sincronização...", "info");
+          await loadBackgroundMusic();
+          updateDisplay();
+
+          // Cria input temporário se não existir
+          if (!document.getElementById("youtubeLink")) {
+            const tempInput = document.createElement("input");
+            tempInput.id = "youtubeLink";
+            tempInput.style.display = "none";
+            document.body.appendChild(tempInput);
+          }
+
+          logEvent(
+            "✅ Teste pronto! Configure uma música e teste os cenários",
+            "success"
+          );
+        } catch (error) {
+          logEvent(`❌ Erro na inicialização: ${error.message}`, "error");
+        }
+      }
+
+      initialize();
+    </script>
+  </body>
+</html>

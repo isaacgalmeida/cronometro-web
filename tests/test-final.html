@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Final - Cronômetro Refatorado</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Teste Final - Cronômetro Refatorado</h1>
+    <div id="results"></div>
+
+    <script type="module">
+      const results = document.getElementById("results");
+
+      function addResult(message, type = "info") {
+        const div = document.createElement("div");
+        div.className = `test-result ${type}`;
+        div.innerHTML = message;
+        results.appendChild(div);
+      }
+
+      async function runTests() {
+        addResult("🚀 Iniciando testes dos módulos refatorados...", "info");
+
+        // Teste 1: Carregamento dos módulos
+        try {
+          const modules = await Promise.all([
+            import("../js/utils.js"),
+            import("../js/cache-manager.js"),
+            import("../js/timer-core.js"),
+            import("../js/music-manager.js"),
+            import("../js/ui-manager.js"),
+            import("../js/effects-manager.js"),
+            import("../js/messages-manager.js"),
+            import("../js/sound-manager.js"),
+            import("../js/image-manager.js"),
+            import("../js/event-manager.js"),
+            import("../js/mp3-manager.js"),
+            import("../js/app.js"),
+          ]);
+
+          addResult(
+            "✅ Todos os 12 módulos carregados com sucesso!",
+            "success"
+          );
+        } catch (error) {
+          addResult(`❌ Erro ao carregar módulos: ${error.message}`, "error");
+          return;
+        }
+
+        // Teste 2: Funções utilitárias
+        try {
+          const { extractVideoId, formatTime, isValidYouTubeUrl } =
+            await import("../js/utils.js");
+
+          const videoId = extractVideoId(
+            "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          );
+          if (videoId === "dQw4w9WgXcQ") {
+            addResult("✅ Extração de ID do YouTube funcionando", "success");
+          } else {
+            addResult("❌ Falha na extração de ID do YouTube", "error");
+          }
+
+          const formatted = formatTime(125);
+          if (formatted === "02:05") {
+            addResult("✅ Formatação de tempo funcionando", "success");
+          } else {
+            addResult("❌ Falha na formatação de tempo", "error");
+          }
+
+          const isValid = isValidYouTubeUrl(
+            "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          );
+          if (isValid) {
+            addResult("✅ Validação de URL do YouTube funcionando", "success");
+          } else {
+            addResult("❌ Falha na validação de URL do YouTube", "error");
+          }
+        } catch (error) {
+          addResult(`❌ Erro nos utilitários: ${error.message}`, "error");
+        }
+
+        // Teste 3: Timer Core
+        try {
+          const { getTimerState, setTimeLeft } = await import(
+            "./js/timer-core.js"
+          );
+
+          setTimeLeft(300); // 5 minutos
+          const state = getTimerState();
+
+          if (state.timeLeft === 300 && state.formattedTime === "05:00") {
+            addResult("✅ Timer core funcionando corretamente", "success");
+          } else {
+            addResult("❌ Falha no timer core", "error");
+          }
+        } catch (error) {
+          addResult(`❌ Erro no timer core: ${error.message}`, "error");
+        }
+
+        // Teste 4: Cache Manager
+        try {
+          const { saveConfig, loadConfig, removeConfig } = await import(
+            "./js/cache-manager.js"
+          );
+
+          saveConfig("test_key", "test_value");
+          const loaded = loadConfig("test_key");
+          removeConfig("test_key");
+
+          if (loaded === "test_value") {
+            addResult("✅ Cache manager funcionando corretamente", "success");
+          } else {
+            addResult("❌ Falha no cache manager", "error");
+          }
+        } catch (error) {
+          addResult(`❌ Erro no cache manager: ${error.message}`, "error");
+        }
+
+        // Teste 5: Verificação de compatibilidade
+        try {
+          // Verifica se mp3Data está disponível globalmente
+          const { hasMp3Data } = await import("../js/mp3-manager.js");
+
+          if (typeof window.mp3Data !== "undefined") {
+            addResult("✅ Compatibilidade com mp3Data mantida", "success");
+          } else {
+            addResult("⚠️ mp3Data não está disponível globalmente", "error");
+          }
+        } catch (error) {
+          addResult(
+            `❌ Erro na verificação de compatibilidade: ${error.message}`,
+            "error"
+          );
+        }
+
+        // Resumo final
+        const successCount = results.querySelectorAll(".success").length;
+        const errorCount = results.querySelectorAll(".error").length;
+
+        addResult(
+          `<br><strong>📊 Resumo dos Testes:</strong><br>
+                      ✅ Sucessos: ${successCount}<br>
+                      ❌ Erros: ${errorCount}<br>
+                      📈 Taxa de sucesso: ${Math.round(
+                        (successCount / (successCount + errorCount)) * 100
+                      )}%`,
+          errorCount === 0 ? "success" : "info"
+        );
+
+        if (errorCount === 0) {
+          addResult(
+            "🎉 <strong>Parabéns! Refatoração concluída com sucesso!</strong><br>Todos os módulos estão funcionando corretamente.",
+            "success"
+          );
+        } else {
+          addResult(
+            "⚠️ <strong>Alguns problemas foram encontrados.</strong><br>Verifique os erros acima e corrija antes de usar em produção.",
+            "error"
+          );
+        }
+      }
+
+      // Executa os testes
+      runTests().catch((error) => {
+        addResult(`💥 Erro crítico nos testes: ${error.message}`, "error");
+      });
+    </script>
+  </body>
+</html>

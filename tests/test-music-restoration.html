@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Restauração de Música - YouTube</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      button {
+        margin: 5px;
+        padding: 10px 15px;
+      }
+      .music-player {
+        margin: 20px 0;
+      }
+      .localStorage-content {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+      input[type="url"] {
+        width: 400px;
+        padding: 8px;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎵 Teste de Restauração de Música do YouTube</h1>
+
+    <div class="test-section">
+      <h3>Instruções do Teste</h3>
+      <ol>
+        <li>Cole uma URL do YouTube no campo abaixo</li>
+        <li>Clique em "Salvar Música no localStorage"</li>
+        <li>Pressione F5 para recarregar a página</li>
+        <li>
+          Verifique se o vídeo aparece carregado (mas sem tocar automaticamente)
+        </li>
+      </ol>
+    </div>
+
+    <div class="test-section">
+      <h3>Controles de Teste</h3>
+      <input
+        type="url"
+        id="youtubeUrl"
+        placeholder="Cole aqui a URL do YouTube (ex: https://www.youtube.com/watch?v=...)"
+      />
+      <br />
+      <button onclick="saveMusicToLocalStorage()">
+        Salvar Música no localStorage
+      </button>
+      <button onclick="loadMusicFromLocalStorage()">
+        Carregar Música do localStorage
+      </button>
+      <button onclick="clearMusicFromLocalStorage()">
+        Limpar localStorage
+      </button>
+      <button onclick="checkLocalStorage()">Verificar localStorage</button>
+    </div>
+
+    <div class="test-section">
+      <h3>Player de Música</h3>
+      <div id="musicPlayer" class="music-player"></div>
+      <div id="musicStatus"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Estado do localStorage</h3>
+      <div id="localStorageContent" class="localStorage-content">
+        Clique em "Verificar localStorage" para ver o conteúdo
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h3>Log de Eventos</h3>
+      <div id="eventLog"></div>
+    </div>
+
+    <script type="module">
+      // Importa os módulos necessários
+      import {
+        loadBackgroundMusic,
+        detectSelectedMusic,
+        playYouTube,
+        restoreMusicState,
+        setMusicSelected,
+      } from "../js/music-manager.js";
+
+      import {
+        loadMusicState,
+        saveMusicState,
+        clearMusicCache,
+        enablePersistence,
+      } from "../js/cache-manager.js";
+
+      import { showMusicStatus } from "../js/ui-manager.js";
+
+      // Habilita persistência
+      enablePersistence();
+
+      // Elementos da interface
+      const youtubeUrl = document.getElementById("youtubeUrl");
+      const localStorageContent = document.getElementById(
+        "localStorageContent"
+      );
+      const eventLog = document.getElementById("eventLog");
+
+      // Log de eventos
+      function logEvent(message, type = "info") {
+        const div = document.createElement("div");
+        div.className = `status ${type}`;
+        div.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+        eventLog.appendChild(div);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Funções de controle (disponíveis globalmente)
+      window.saveMusicToLocalStorage = () => {
+        const url = youtubeUrl.value.trim();
+        if (!url) {
+          logEvent("❌ Por favor, insira uma URL do YouTube", "error");
+          return;
+        }
+
+        try {
+          // Simula o estado da música como seria salvo pelo sistema
+          const musicState = {
+            currentUrl: url,
+            isSelected: true,
+            timestamp: Date.now(),
+          };
+
+          // Salva no localStorage
+          localStorage.setItem(
+            "cronometro_music_state",
+            JSON.stringify(musicState)
+          );
+
+          logEvent(`✅ Música salva no localStorage: ${url}`, "success");
+          logEvent("🔄 Agora pressione F5 para testar a restauração", "info");
+
+          // Atualiza visualização do localStorage
+          checkLocalStorage();
+        } catch (error) {
+          logEvent(`❌ Erro ao salvar música: ${error.message}`, "error");
+        }
+      };
+
+      window.loadMusicFromLocalStorage = async () => {
+        try {
+          logEvent("🔄 Carregando música do localStorage...", "info");
+
+          // Carrega dados de música primeiro (necessário para findMusicTitle)
+          await loadBackgroundMusic();
+
+          // Carrega estado da música
+          const savedState = loadMusicState();
+          if (savedState) {
+            logEvent(
+              `📁 Estado encontrado no localStorage: ${savedState.currentUrl}`,
+              "success"
+            );
+
+            // Restaura o estado
+            const restored = restoreMusicState(savedState);
+            if (restored) {
+              logEvent("✅ Música restaurada com sucesso!", "success");
+              logEvent(
+                "🎵 O vídeo deve aparecer carregado no player acima",
+                "info"
+              );
+            } else {
+              logEvent("❌ Falha ao restaurar música", "error");
+            }
+          } else {
+            logEvent("❌ Nenhuma música encontrada no localStorage", "error");
+          }
+        } catch (error) {
+          logEvent(`❌ Erro ao carregar música: ${error.message}`, "error");
+        }
+      };
+
+      window.clearMusicFromLocalStorage = () => {
+        try {
+          clearMusicCache();
+
+          // Limpa também o player
+          const musicPlayer = document.getElementById("musicPlayer");
+          if (musicPlayer) {
+            musicPlayer.innerHTML = "";
+            musicPlayer.style.width = "0";
+            musicPlayer.style.height = "0";
+          }
+
+          logEvent("🗑️ localStorage da música limpo", "info");
+          checkLocalStorage();
+        } catch (error) {
+          logEvent(`❌ Erro ao limpar localStorage: ${error.message}`, "error");
+        }
+      };
+
+      window.checkLocalStorage = () => {
+        try {
+          const musicState = localStorage.getItem("cronometro_music_state");
+          if (musicState) {
+            const parsed = JSON.parse(musicState);
+            localStorageContent.textContent = JSON.stringify(parsed, null, 2);
+
+            logEvent(
+              `📊 localStorage verificado: ${parsed.currentUrl}`,
+              "info"
+            );
+          } else {
+            localStorageContent.textContent =
+              "Nenhum estado de música salvo no localStorage";
+            logEvent("📊 Nenhuma música encontrada no localStorage", "info");
+          }
+        } catch (error) {
+          localStorageContent.textContent = `Erro: ${error.message}`;
+          logEvent(
+            `❌ Erro ao verificar localStorage: ${error.message}`,
+            "error"
+          );
+        }
+      };
+
+      // Inicialização automática
+      async function initialize() {
+        try {
+          logEvent(
+            "🚀 Inicializando teste de restauração de música...",
+            "info"
+          );
+
+          // Carrega dados de música
+          await loadBackgroundMusic();
+          logEvent("📁 Dados de música carregados", "success");
+
+          // Verifica se há música salva e tenta restaurar automaticamente
+          const savedState = loadMusicState();
+          if (savedState) {
+            logEvent(
+              "🔍 Música encontrada no localStorage - restaurando automaticamente...",
+              "info"
+            );
+
+            setTimeout(() => {
+              const restored = restoreMusicState(savedState);
+              if (restored) {
+                logEvent(
+                  "✅ Música restaurada automaticamente na inicialização!",
+                  "success"
+                );
+                logEvent(
+                  "🎵 Teste bem-sucedido: O vídeo foi carregado após F5",
+                  "success"
+                );
+              }
+            }, 1000);
+          } else {
+            logEvent("ℹ️ Nenhuma música salva encontrada", "info");
+            logEvent(
+              '💡 Cole uma URL do YouTube e clique em "Salvar" para testar',
+              "info"
+            );
+          }
+
+          checkLocalStorage();
+        } catch (error) {
+          logEvent(`❌ Erro na inicialização: ${error.message}`, "error");
+        }
+      }
+
+      // URLs de exemplo para teste rápido
+      const exampleUrls = [
+        "https://www.youtube.com/watch?v=jfKfPfyJRdk", // Lofi hip hop
+        "https://www.youtube.com/watch?v=5qap5aO4i9A", // Relaxing music
+        "https://www.youtube.com/watch?v=lFcSrYw-ARY", // Ambient music
+      ];
+
+      // Adiciona botões de exemplo
+      const controlsSection = document.querySelector(
+        ".test-section:nth-child(2)"
+      );
+      const exampleDiv = document.createElement("div");
+      exampleDiv.innerHTML = "<br><strong>URLs de Exemplo:</strong><br>";
+      exampleUrls.forEach((url, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = `Exemplo ${index + 1}`;
+        btn.onclick = () => {
+          youtubeUrl.value = url;
+          logEvent(`📝 URL de exemplo ${index + 1} inserida`, "info");
+        };
+        exampleDiv.appendChild(btn);
+      });
+      controlsSection.appendChild(exampleDiv);
+
+      // Executa inicialização
+      initialize();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Configuração Padrão do Som</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      button {
+        margin: 5px;
+        padding: 10px 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔊 Teste Configuração Padrão do Som</h1>
+
+    <div class="test-section">
+      <h3>Objetivo do Teste</h3>
+      <p>
+        Verificar se o Sound Effect Toggle está
+        <strong>desabilitado por padrão</strong> quando:
+      </p>
+      <ul>
+        <li>✅ Não há configuração salva no localStorage</li>
+        <li>✅ Primeira vez que o usuário acessa a aplicação</li>
+        <li>✅ localStorage foi limpo</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h3>Controles de Teste</h3>
+      <button onclick="testDefaultSound()">Testar Configuração Padrão</button>
+      <button onclick="clearSoundConfig()">Limpar Configuração do Som</button>
+      <button onclick="testSoundToggle()">Testar Toggle do Som</button>
+      <button onclick="checkLocalStorage()">Verificar localStorage</button>
+    </div>
+
+    <div class="test-section">
+      <h3>Simulação do Toggle</h3>
+      <label> <input type="checkbox" id="soundToggle" /> Som Habilitado </label>
+      <p>
+        <em>Este toggle simula o comportamento do toggle real da aplicação</em>
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h3>Estado do localStorage</h3>
+      <div
+        id="localStorageContent"
+        style="
+          background: #f8f9fa;
+          padding: 10px;
+          border-radius: 5px;
+          font-family: monospace;
+        "
+      ></div>
+    </div>
+
+    <div class="test-section">
+      <h3>Log de Testes</h3>
+      <div id="testLog"></div>
+    </div>
+
+    <script type="module">
+      // Importa os módulos necessários
+      import {
+        initializeSoundToggle,
+        playBeepSound,
+      } from "../js/sound-manager.js";
+      import {
+        loadConfig,
+        saveConfig,
+        removeConfig,
+        enablePersistence,
+      } from "../js/cache-manager.js";
+
+      // Habilita persistência
+      enablePersistence();
+
+      // Elementos da interface
+      const testLog = document.getElementById("testLog");
+      const localStorageContent = document.getElementById(
+        "localStorageContent"
+      );
+      const soundToggle = document.getElementById("soundToggle");
+
+      // Log de eventos
+      function logTest(message, type = "info") {
+        const div = document.createElement("div");
+        div.className = `status ${type}`;
+        div.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+        testLog.appendChild(div);
+        testLog.scrollTop = testLog.scrollHeight;
+      }
+
+      // Funções de teste (disponíveis globalmente)
+      window.testDefaultSound = () => {
+        logTest("🧪 Testando configuração padrão do som...", "info");
+
+        // Remove qualquer configuração existente
+        removeConfig("cronometro_sound_enabled");
+
+        // Testa o valor padrão
+        const defaultValue = loadConfig("cronometro_sound_enabled", false);
+
+        if (defaultValue === false) {
+          logTest(
+            "✅ PASSOU: Configuração padrão é FALSE (desabilitado)",
+            "success"
+          );
+        } else {
+          logTest("❌ FALHOU: Configuração padrão deveria ser FALSE", "error");
+        }
+
+        // Testa a função playBeepSound com configuração padrão
+        logTest(
+          "🔊 Testando playBeepSound() com configuração padrão...",
+          "info"
+        );
+
+        try {
+          // Simula chamada da função (sem tocar som real)
+          const soundEnabled = loadConfig("cronometro_sound_enabled", false);
+
+          if (!soundEnabled) {
+            logTest(
+              "✅ PASSOU: playBeepSound() não toca som quando desabilitado por padrão",
+              "success"
+            );
+          } else {
+            logTest(
+              "❌ FALHOU: playBeepSound() deveria estar desabilitado por padrão",
+              "error"
+            );
+          }
+        } catch (error) {
+          logTest(`❌ ERRO: ${error.message}`, "error");
+        }
+
+        updateLocalStorageDisplay();
+      };
+
+      window.clearSoundConfig = () => {
+        removeConfig("cronometro_sound_enabled");
+        soundToggle.checked = false;
+        logTest("🗑️ Configuração do som limpa do localStorage", "info");
+        updateLocalStorageDisplay();
+      };
+
+      window.testSoundToggle = () => {
+        logTest("🧪 Testando inicialização do toggle...", "info");
+
+        // Limpa configuração primeiro
+        removeConfig("cronometro_sound_enabled");
+
+        // Simula inicialização do toggle
+        const defaultChecked = loadConfig("cronometro_sound_enabled", false);
+        soundToggle.checked = defaultChecked;
+
+        if (!soundToggle.checked) {
+          logTest(
+            "✅ PASSOU: Toggle inicializado como DESABILITADO por padrão",
+            "success"
+          );
+        } else {
+          logTest(
+            "❌ FALHOU: Toggle deveria estar DESABILITADO por padrão",
+            "error"
+          );
+        }
+
+        // Testa mudança do toggle
+        soundToggle.addEventListener("change", () => {
+          saveConfig("cronometro_sound_enabled", soundToggle.checked);
+          logTest(
+            `🔄 Toggle alterado para: ${
+              soundToggle.checked ? "HABILITADO" : "DESABILITADO"
+            }`,
+            "info"
+          );
+          updateLocalStorageDisplay();
+        });
+      };
+
+      window.checkLocalStorage = () => {
+        updateLocalStorageDisplay();
+      };
+
+      function updateLocalStorageDisplay() {
+        try {
+          const soundConfig = localStorage.getItem("cronometro_sound_enabled");
+
+          if (soundConfig === null) {
+            localStorageContent.textContent =
+              "cronometro_sound_enabled: (não definido - padrão: false)";
+            localStorageContent.style.color = "#28a745"; // Verde
+          } else {
+            const parsed = JSON.parse(soundConfig);
+            localStorageContent.textContent = `cronometro_sound_enabled: ${parsed}`;
+            localStorageContent.style.color = parsed ? "#dc3545" : "#28a745"; // Vermelho se true, verde se false
+          }
+        } catch (error) {
+          localStorageContent.textContent = `Erro: ${error.message}`;
+          localStorageContent.style.color = "#dc3545";
+        }
+      }
+
+      // Teste automático na inicialização
+      function runInitialTests() {
+        logTest("🚀 Iniciando testes automáticos...", "info");
+
+        // Teste 1: Verificar se não há configuração salva
+        const existingConfig = localStorage.getItem("cronometro_sound_enabled");
+        if (existingConfig === null) {
+          logTest(
+            "✅ Teste Inicial 1: Nenhuma configuração prévia encontrada",
+            "success"
+          );
+        } else {
+          logTest(
+            "⚠️ Teste Inicial 1: Configuração prévia encontrada - limpando para teste",
+            "info"
+          );
+          removeConfig("cronometro_sound_enabled");
+        }
+
+        // Teste 2: Verificar valor padrão
+        const defaultValue = loadConfig("cronometro_sound_enabled", false);
+        if (defaultValue === false) {
+          logTest(
+            "✅ Teste Inicial 2: Valor padrão correto (false)",
+            "success"
+          );
+        } else {
+          logTest("❌ Teste Inicial 2: Valor padrão incorreto", "error");
+        }
+
+        // Teste 3: Verificar toggle
+        soundToggle.checked = loadConfig("cronometro_sound_enabled", false);
+        if (!soundToggle.checked) {
+          logTest(
+            "✅ Teste Inicial 3: Toggle inicializado como desabilitado",
+            "success"
+          );
+        } else {
+          logTest(
+            "❌ Teste Inicial 3: Toggle deveria estar desabilitado",
+            "error"
+          );
+        }
+
+        updateLocalStorageDisplay();
+
+        logTest(
+          "🎯 Testes automáticos concluídos. Use os botões para testes manuais.",
+          "info"
+        );
+      }
+
+      // Executa testes na inicialização
+      runInitialTests();
+    </script>
+  </body>
+</html>

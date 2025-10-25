@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste de Módulos</title>
+  </head>
+  <body>
+    <h1>Teste de Carregamento dos Módulos</h1>
+    <div id="results"></div>
+
+    <script type="module">
+      const results = document.getElementById("results");
+
+      async function testModules() {
+        const modules = [
+          "js/utils.js",
+          "js/cache-manager.js",
+          "js/timer-core.js",
+          "js/music-manager.js",
+          "js/ui-manager.js",
+          "js/effects-manager.js",
+          "js/messages-manager.js",
+          "js/sound-manager.js",
+          "js/image-manager.js",
+          "js/event-manager.js",
+          "js/app.js",
+        ];
+
+        for (const modulePath of modules) {
+          try {
+            await import(`../${modulePath}`);
+            results.innerHTML += `<p style="color: green;">✅ ${modulePath} - OK</p>`;
+          } catch (error) {
+            results.innerHTML += `<p style="color: red;">❌ ${modulePath} - ERRO: ${error.message}</p>`;
+          }
+        }
+      }
+
+      testModules();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste localStorage - isRunning</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      button {
+        margin: 5px;
+        padding: 10px 15px;
+      }
+      .timer-display {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+      .localStorage-content {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Teste localStorage - isRunning</h1>
+
+    <div class="test-section">
+      <h3>Timer Display</h3>
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div id="statusDisplay">Timer parado</div>
+    </div>
+
+    <div class="test-section">
+      <h3>Controles do Timer</h3>
+      <button onclick="startTimer5Min()">Iniciar 5min</button>
+      <button onclick="startCurrentTimer()">Iniciar Atual</button>
+      <button onclick="pauseTimer()">Pausar</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <div class="test-section">
+      <h3>Estado do localStorage</h3>
+      <button onclick="checkLocalStorage()">Verificar localStorage</button>
+      <button onclick="clearLocalStorage()">Limpar localStorage</button>
+      <div id="localStorageContent" class="localStorage-content">
+        Clique em "Verificar localStorage" para ver o conteúdo
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h3>Log de Eventos</h3>
+      <div id="eventLog"></div>
+    </div>
+
+    <script type="module">
+      // Importa os módulos necessários
+      import {
+        startTimer as coreStartTimer,
+        startCurrentTimer as coreStartCurrentTimer,
+        pauseTimer as corePauseTimer,
+        resetTimer as coreResetTimer,
+        getTimerState,
+        onTimerEvent,
+      } from "../js/timer-core.js";
+
+      import { enablePersistence } from "../js/cache-manager.js";
+
+      // Habilita persistência
+      enablePersistence();
+
+      // Elementos da interface
+      const timerDisplay = document.getElementById("timerDisplay");
+      const statusDisplay = document.getElementById("statusDisplay");
+      const localStorageContent = document.getElementById(
+        "localStorageContent"
+      );
+      const eventLog = document.getElementById("eventLog");
+
+      // Log de eventos
+      function logEvent(message, type = "info") {
+        const div = document.createElement("div");
+        div.className = `status ${type}`;
+        div.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+        eventLog.appendChild(div);
+        eventLog.scrollTop = eventLog.scrollHeight;
+      }
+
+      // Atualiza display do timer
+      function updateDisplay() {
+        const state = getTimerState();
+        timerDisplay.textContent = state.formattedTime;
+        statusDisplay.textContent = state.isRunning
+          ? "Timer rodando"
+          : state.timeLeft > 0
+          ? "Timer pausado"
+          : "Timer parado";
+
+        logEvent(
+          `Display atualizado: isRunning=${state.isRunning}, timeLeft=${state.timeLeft}`
+        );
+
+        // Verifica localStorage automaticamente
+        setTimeout(checkLocalStorage, 100);
+      }
+
+      // Configura callbacks do timer
+      onTimerEvent("onTick", updateDisplay);
+      onTimerEvent("onStart", () => logEvent("Timer iniciado", "success"));
+      onTimerEvent("onPause", () => logEvent("Timer pausado", "info"));
+      onTimerEvent("onStop", () => logEvent("Timer parado", "error"));
+
+      // Funções de controle (disponíveis globalmente)
+      window.startTimer5Min = () => {
+        logEvent("Iniciando timer de 5 minutos...");
+        coreStartTimer(5);
+      };
+
+      window.startCurrentTimer = () => {
+        logEvent("Iniciando timer atual...");
+        coreStartCurrentTimer();
+      };
+
+      window.pauseTimer = () => {
+        logEvent("Pausando timer...");
+        corePauseTimer();
+      };
+
+      window.resetTimer = () => {
+        logEvent("Resetando timer...");
+        coreResetTimer();
+      };
+
+      window.checkLocalStorage = () => {
+        try {
+          const timerState = localStorage.getItem("cronometro_timer_state");
+          if (timerState) {
+            const parsed = JSON.parse(timerState);
+            localStorageContent.textContent = JSON.stringify(parsed, null, 2);
+
+            // Destaca o isRunning
+            const isRunningValue = parsed.isRunning;
+            logEvent(
+              `localStorage verificado: isRunning = ${isRunningValue}`,
+              isRunningValue ? "success" : "info"
+            );
+          } else {
+            localStorageContent.textContent =
+              "Nenhum estado salvo no localStorage";
+            logEvent("Nenhum estado encontrado no localStorage", "error");
+          }
+        } catch (error) {
+          localStorageContent.textContent = `Erro: ${error.message}`;
+          logEvent(`Erro ao verificar localStorage: ${error.message}`, "error");
+        }
+      };
+
+      window.clearLocalStorage = () => {
+        localStorage.removeItem("cronometro_timer_state");
+        localStorageContent.textContent = "localStorage limpo";
+        logEvent("localStorage limpo", "info");
+      };
+
+      // Inicialização
+      logEvent("Teste iniciado - Pronto para testar isRunning no localStorage");
+      updateDisplay();
+      checkLocalStorage();
+    </script>
+  </body>
+</html>
