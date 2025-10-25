@@ -40,6 +40,9 @@ function setMusicSelected(url) {
   musicState.isSelected = !!url;
   musicState.currentUrl = url || '';
   console.log('Music selected:', { url, isSelected: musicState.isSelected });
+
+  // Salva o estado da música automaticamente
+  saveMusicState();
 }
 
 function setMusicPlaying(playing) {
@@ -193,6 +196,79 @@ function loadTimerState() {
 
 function clearTimerCache() {
   localStorage.removeItem(CACHE_KEYS.TIMER_STATE);
+}
+
+// -------------------- Cache da Música --------------------
+function saveMusicState() {
+  if (!canPersist) return; // ainda inicializando
+
+  try {
+    const state = {
+      currentUrl: musicState.currentUrl,
+      isSelected: musicState.isSelected,
+      timestamp: Date.now()
+    };
+
+    // Só salva se há música selecionada
+    if (musicState.isSelected && musicState.currentUrl) {
+      localStorage.setItem(CACHE_KEYS.MUSIC_STATE, JSON.stringify(state));
+      console.log('Music state saved:', state);
+    }
+  } catch (error) {
+    console.error('Erro ao salvar estado da música:', error);
+  }
+}
+
+function loadMusicState() {
+  try {
+    const saved = localStorage.getItem(CACHE_KEYS.MUSIC_STATE);
+    if (!saved) return null;
+
+    const state = JSON.parse(saved);
+
+    if (state.currentUrl && state.isSelected) {
+      // Restaura a seleção da música
+      setMusicSelected(state.currentUrl);
+
+      // Aplica a seleção na interface
+      applyMusicSelectionToUI(state.currentUrl);
+
+      console.log('Music state loaded:', state);
+      return true; // Retorna true quando conseguiu restaurar
+    }
+  } catch (error) {
+    console.error('Erro ao carregar estado da música:', error);
+    clearMusicCache();
+  }
+
+  return false; // Retorna false quando não conseguiu restaurar
+}
+
+function clearMusicCache() {
+  localStorage.removeItem(CACHE_KEYS.MUSIC_STATE);
+}
+
+function applyMusicSelectionToUI(url) {
+  console.log('Applying music selection to UI:', url);
+
+  // Aplica a seleção no dropdown de música preset
+  const presetSelect = document.getElementById('presetMusic');
+  if (presetSelect) {
+    // Verifica se a URL está no dropdown
+    const option = Array.from(presetSelect.options).find(opt => opt.value === url);
+    if (option) {
+      presetSelect.value = url;
+      console.log('Music applied to preset dropdown');
+      return;
+    }
+  }
+
+  // Se não está no dropdown, aplica no campo customizado
+  const customInput = document.getElementById('youtubeLink');
+  if (customInput && url && url.startsWith('http')) {
+    customInput.value = url;
+    console.log('Music applied to custom input');
+  }
 }
 
 function showCacheStatus(message, type = 'success') {
@@ -736,6 +812,16 @@ function resumeMusic() {
 
 function stopMusic() {
   try {
+    // Para MP3 se estiver tocando
+    if (musicState.currentUrl === 'mp3://custom') {
+      if (typeof stopMp3 === 'function') {
+        stopMp3();
+      }
+      setMusicPlaying(false);
+      showMusicStatus('🔇 Música parada');
+      return;
+    }
+
     // Tenta usar a API do YouTube primeiro
     if (youtubePlayer && youtubePlayer.stopVideo && isYouTubeAPIReady) {
       youtubePlayer.stopVideo();
@@ -759,7 +845,7 @@ function stopMusic() {
     // Limpa URL pausada quando para completamente
     pausedMusicUrl = '';
     setMusicPlaying(false);
-    setMusicSelected(''); // limpa seleção quando para
+    // Não limpa seleção quando para - mantém para persistência
     showMusicStatus('🔇 Música parada');
   } catch (error) {
     console.error('Erro ao parar música:', error);
@@ -1218,6 +1304,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       loadRunMessages() // carrega as mensagens
     ]);
 
+    // Carrega estado da música APÓS carregar os dados de música
+    const musicRestored = loadMusicState();
+
+    // Se timer está rodando e música foi restaurada, inicia a música
+    if (isRunning && musicRestored && musicState.isSelected) {
+      setTimeout(() => {
+        console.log('Auto-starting music after restore');
+        console.log('Music state before auto-start:', getMusicState());
+
+        // Força a detecção da música selecionada
+        detectSelectedMusic();
+
+        // Inicia a música via sync
+        syncMusicWithTimer('start');
+      }, 500); // Pequeno delay para garantir que tudo foi inicializado
+    }
+
     // Inicializa detecção de música após carregar dados
     setTimeout(() => {
       detectSelectedMusic();
@@ -1275,6 +1378,23 @@ if (document.readyState !== 'loading') {
         loadBackgroundImages(),
         loadRunMessages() // também no fallback
       ]);
+
+      // Carrega estado da música APÓS carregar os dados (fallback)
+      const musicRestored = loadMusicState();
+
+      // Se timer está rodando e música foi restaurada, inicia a música (fallback)
+      if (isRunning && musicRestored && musicState.isSelected) {
+        setTimeout(() => {
+          console.log('Auto-starting music after restore (fallback)');
+          console.log('Music state before auto-start (fallback):', getMusicState());
+
+          // Força a detecção da música selecionada
+          detectSelectedMusic();
+
+          // Inicia a música via sync
+          syncMusicWithTimer('start');
+        }, 500);
+      }
 
       // Inicializa detecção de música após carregar dados (fallback)
       setTimeout(() => {
@@ -2166,41 +2286,4 @@ function handleTimerStop() {
   }
 }
 
-// Atualiza a função de parar música para incluir MP3
-function stopMusic() {
-  try {
-    // Para MP3 se estiver tocando
-    if (musicState.currentUrl === 'mp3://custom') {
-      stopMp3();
-      return;
-    }
-
-    // Tenta usar a API do YouTube primeiro
-    if (youtubePlayer && youtubePlayer.stopVideo && isYouTubeAPIReady) {
-      youtubePlayer.stopVideo();
-      console.log('Music stopped via YouTube API');
-    }
-
-    // Limpa o player element
-    const playerElement = document.getElementById('musicPlayer');
-    if (playerElement) {
-      if (playerElement.querySelector('iframe')) {
-        playerElement.innerHTML = '';
-      } else {
-        playerElement.src = '';
-      }
-
-      playerElement.style.width = '0';
-      playerElement.style.height = '0';
-      playerElement.style.display = 'block'; // reset display
-    }
-
-    // Limpa URL pausada quando para completamente
-    pausedMusicUrl = '';
-    setMusicPlaying(false);
-    setMusicSelected(''); // limpa seleção quando para
-    showMusicStatus('🔇 Música parada');
-  } catch (error) {
-    console.error('Erro ao parar música:', error);
-  }
-}
+// Função stopMusic unificada já definida acima - removendo duplicação
