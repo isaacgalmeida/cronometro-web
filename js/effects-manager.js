@@ -7,8 +7,8 @@ import { CACHE_KEYS, loadConfig, saveConfig } from './cache-manager.js';
 // Estado dos efeitos
 let christmasElements = [];
 let christmasAnimationId = null;
-let newYearElements = [];
-let newYearAnimationId = null;
+let fireworksInstance = null;
+let fireworksPaused = false;
 
 // Tipos de elementos natalinos
 const CHRISTMAS_TYPES = {
@@ -22,15 +22,7 @@ const CHRISTMAS_TYPES = {
   HOLLY: { symbol: '🎅', weight: 0.02 }
 };
 
-// Tipos de elementos de Ano Novo
-const NEW_YEAR_TYPES = {
-  FIREWORK_RED: { symbol: '🎆', weight: 0.25, color: '#FF4444' },
-  FIREWORK_BLUE: { symbol: '🎇', weight: 0.25, color: '#4444FF' },
-  FIREWORK_GOLD: { symbol: '🎆', weight: 0.2, color: '#FFD700' },
-  FIREWORK_GREEN: { symbol: '🎇', weight: 0.15, color: '#44FF44' },
-  FIREWORK_PURPLE: { symbol: '🎆', weight: 0.1, color: '#AA44FF' },
-  SPARKLE_EXPLOSION: { symbol: '✨', weight: 0.05, color: '#FFFFFF' }
-};
+
 
 /**
  * Obtém tipo aleatório de elemento natalino
@@ -50,23 +42,7 @@ function getRandomChristmasType() {
   return { type: 'SNOWFLAKE', ...CHRISTMAS_TYPES.SNOWFLAKE };
 }
 
-/**
- * Obtém tipo aleatório de elemento de Ano Novo
- * @returns {Object} - Configuração do elemento
- */
-function getRandomNewYearType() {
-  const random = Math.random();
-  let cumulative = 0;
 
-  for (const [type, config] of Object.entries(NEW_YEAR_TYPES)) {
-    cumulative += config.weight;
-    if (random <= cumulative) {
-      return { type, ...config };
-    }
-  }
-
-  return { type: 'FIREWORK_GOLD', ...NEW_YEAR_TYPES.FIREWORK_GOLD };
-}
 
 /**
  * Cria elemento natalino
@@ -91,34 +67,7 @@ function createChristmasElement() {
   };
 }
 
-/**
- * Cria elemento de Ano Novo
- * @returns {Object} - Elemento criado
- */
-function createNewYearElement() {
-  const elementType = getRandomNewYearType();
-  const isEmoji = elementType.symbol.length > 1;
-  const isFirework = elementType.type.includes('FIREWORK');
 
-  return {
-    x: Math.random() * window.innerWidth,
-    y: isFirework ? window.innerHeight + 20 : -30,
-    size: isEmoji ? Math.random() * 12 + 18 : Math.random() * 5 + 4,
-    speed: isFirework ? Math.random() * 4 + 3 : Math.random() * 1.5 + 0.5,
-    opacity: Math.random() * 0.8 + 0.2,
-    drift: Math.random() * 1 - 0.5,
-    rotation: Math.random() * 360,
-    rotationSpeed: Math.random() * 8 - 4,
-    symbol: elementType.symbol,
-    color: elementType.color,
-    type: elementType.type,
-    isEmoji: isEmoji,
-    isFirework: isFirework,
-    fireworkPhase: 0,
-    explosionTime: 0,
-    targetHeight: Math.random() * (window.innerHeight * 0.4) + (window.innerHeight * 0.1)
-  };
-}
 
 /**
  * Atualiza elementos natalinos
@@ -183,128 +132,9 @@ function updateChristmasElements() {
   christmasAnimationId = requestAnimationFrame(updateChristmasElements);
 }
 
-/**
- * Atualiza elementos de Ano Novo
- */
-function updateNewYearElements() {
-  const container = document.getElementById('newYearContainer');
-  if (!container) return;
 
-  container.innerHTML = '';
 
-  newYearElements = newYearElements.filter(element => {
-    // Lógica especial para fogos de artifício
-    if (element.isFirework) {
-      if (element.fireworkPhase === 0) {
-        element.y -= element.speed;
-        element.x += element.drift * 0.3;
 
-        if (element.y <= element.targetHeight) {
-          element.fireworkPhase = 1;
-          element.explosionTime = 0;
-          createFireworkExplosion(element.x, element.y, element.color);
-          return false;
-        }
-      }
-    } else if (element.type === 'EXPLOSION_PARTICLE' || element.type === 'EXPLOSION_CENTER') {
-      element.life--;
-      if (element.life <= 0) return false;
-
-      element.x += element.drift;
-      element.y += element.verticalSpeed;
-      element.verticalSpeed += 0.1;
-      element.drift *= 0.98;
-      element.rotation += element.rotationSpeed;
-      element.opacity = Math.max(0, element.life / 60);
-    } else {
-      element.y += element.speed;
-      element.x += element.drift;
-      element.rotation += element.rotationSpeed;
-
-      if (element.type === 'SPARKLE_EXPLOSION') {
-        element.opacity = 0.3 + Math.sin(Date.now() * 0.01) * 0.4;
-      }
-    }
-
-    // Remove elementos que saíram da tela
-    if (element.y > window.innerHeight + 50 || element.x < -50 || element.x > window.innerWidth + 50) {
-      return false;
-    }
-
-    // Cria elemento visual
-    const newYearEl = document.createElement('div');
-
-    if (element.isEmoji) {
-      newYearEl.style.cssText = `
-        position: absolute;
-        left: ${element.x}px;
-        top: ${element.y}px;
-        font-size: ${element.size}px;
-        opacity: ${element.opacity};
-        pointer-events: none;
-        transform: rotate(${element.rotation}deg);
-        user-select: none;
-        z-index: 32;
-        filter: drop-shadow(0 0 ${element.size / 4}px ${element.color});
-      `;
-      newYearEl.textContent = element.symbol;
-    } else {
-      newYearEl.style.cssText = `
-        position: absolute;
-        left: ${element.x}px;
-        top: ${element.y}px;
-        width: ${element.size}px;
-        height: ${element.size}px;
-        background: ${element.color};
-        opacity: ${element.opacity};
-        pointer-events: none;
-        transform: rotate(${element.rotation}deg);
-        border-radius: 2px;
-        box-shadow: 0 0 ${element.size}px ${element.color};
-      `;
-    }
-
-    container.appendChild(newYearEl);
-    return true;
-  });
-
-  // Adiciona novos fogos de artifício
-  if (Math.random() < 0.15) {
-    newYearElements.push(createNewYearElement());
-  }
-
-  newYearAnimationId = requestAnimationFrame(updateNewYearElements);
-}
-
-/**
- * Cria explosão de fogo de artifício
- * @param {number} x - Posição X
- * @param {number} y - Posição Y
- * @param {string} color - Cor da explosão
- */
-function createFireworkExplosion(x, y, color) {
-  const particleCount = 15 + Math.random() * 10;
-
-  for (let i = 0; i < particleCount; i++) {
-    const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.5;
-    const speed = Math.random() * 3 + 2;
-
-    newYearElements.push({
-      x: x,
-      y: y,
-      size: Math.random() * 4 + 2,
-      opacity: 1,
-      drift: Math.cos(angle) * speed,
-      verticalSpeed: Math.sin(angle) * speed,
-      rotation: Math.random() * 360,
-      rotationSpeed: Math.random() * 10 - 5,
-      color: color,
-      type: 'EXPLOSION_PARTICLE',
-      isEmoji: false,
-      life: 60 + Math.random() * 30
-    });
-  }
-}
 
 /**
  * Inicia efeito natalino
@@ -347,25 +177,95 @@ export function stopChristmasEffect() {
 }
 
 /**
- * Inicia efeito de Ano Novo
+ * Inicia efeito de Ano Novo com Fireworks.js
  */
 export function startNewYearEffect() {
-  const container = document.getElementById('newYearContainer');
-  if (container) {
+  const container = document.getElementById('fireworksContainer');
+  if (container && typeof Fireworks !== 'undefined') {
     container.classList.remove('hidden');
-    newYearElements = [];
 
-    // Inicia com alguns elementos
-    for (let i = 0; i < 20; i++) {
-      const element = createNewYearElement();
-      if (!element.isFirework) {
-        element.y = Math.random() * window.innerHeight;
+    // Cria instância do Fireworks.js
+    fireworksInstance = new Fireworks.default(container, {
+      autoresize: true,
+      opacity: 0.5,
+      acceleration: 1.05,
+      friction: 0.97,
+      gravity: 1.5,
+      particles: 50,
+      traceLength: 3,
+      traceSpeed: 10,
+      explosion: 5,
+      intensity: 30,
+      flickering: 50,
+      lineStyle: 'round',
+      hue: {
+        min: 0,
+        max: 360
+      },
+      delay: {
+        min: 30,
+        max: 60
+      },
+      rocketsPoint: {
+        min: 50,
+        max: 50
+      },
+      lineWidth: {
+        explosion: {
+          min: 1,
+          max: 3
+        },
+        trace: {
+          min: 1,
+          max: 2
+        }
+      },
+      brightness: {
+        min: 50,
+        max: 80
+      },
+      decay: {
+        min: 0.015,
+        max: 0.03
+      },
+      mouse: {
+        click: false,
+        move: false,
+        max: 1
       }
-      newYearElements.push(element);
-    }
+    });
 
-    updateNewYearElements();
-    console.log('New Year effect started');
+    fireworksInstance.start();
+    fireworksPaused = false;
+    console.log('New Year fireworks effect started');
+  } else {
+    console.error('Fireworks.js library not loaded or container not found');
+  }
+}
+
+/**
+ * Pausa efeito de Ano Novo
+ */
+export function pauseNewYearEffect() {
+  const container = document.getElementById('fireworksContainer');
+  if (container && fireworksInstance) {
+    container.style.opacity = '0.3';
+    fireworksInstance.stop();
+    fireworksPaused = true;
+    console.log('New Year fireworks effect paused');
+  }
+}
+
+/**
+ * Retoma efeito de Ano Novo
+ */
+export function resumeNewYearEffect() {
+  const container = document.getElementById('fireworksContainer');
+  if (container && fireworksInstance && fireworksPaused) {
+    container.style.opacity = '1';
+    fireworksInstance.start();
+    fireworksPaused = false;
+    console.log('New Year fireworks effect resumed');
   }
 }
 
@@ -373,19 +273,19 @@ export function startNewYearEffect() {
  * Para efeito de Ano Novo
  */
 export function stopNewYearEffect() {
-  const container = document.getElementById('newYearContainer');
+  const container = document.getElementById('fireworksContainer');
   if (container) {
     container.classList.add('hidden');
-    container.innerHTML = '';
+    container.style.opacity = '1';
   }
 
-  if (newYearAnimationId) {
-    cancelAnimationFrame(newYearAnimationId);
-    newYearAnimationId = null;
+  if (fireworksInstance) {
+    fireworksInstance.stop();
+    fireworksInstance = null;
   }
 
-  newYearElements = [];
-  console.log('New Year effect stopped');
+  fireworksPaused = false;
+  console.log('New Year fireworks effect stopped');
 }
 
 /**
@@ -417,20 +317,38 @@ export function updateChristmasEffectBasedOnTimer(isRunning) {
  */
 export function updateNewYearEffectBasedOnTimer(isRunning) {
   const newYearEnabled = loadConfig(CACHE_KEYS.NEW_YEAR_ENABLED, false);
-  const shouldRun = newYearEnabled && isRunning;
-  const isCurrentlyRunning = !!newYearAnimationId;
 
-  console.log('New Year effect check:', {
+  if (!newYearEnabled) {
+    // Se o efeito está desabilitado, para completamente
+    if (fireworksInstance) {
+      stopNewYearEffect();
+    }
+    return;
+  }
+
+  const isCurrentlyActive = !!fireworksInstance;
+
+  console.log('New Year fireworks effect check:', {
     newYearEnabled,
     isRunning,
-    shouldRun,
-    isCurrentlyRunning
+    isCurrentlyActive,
+    fireworksPaused
   });
 
-  if (shouldRun && !isCurrentlyRunning) {
+  if (newYearEnabled && !isCurrentlyActive && isRunning) {
+    // Inicia o efeito se não estiver ativo e o timer estiver rodando
     startNewYearEffect();
-  } else if (!shouldRun && isCurrentlyRunning) {
-    stopNewYearEffect();
+  } else if (newYearEnabled && isCurrentlyActive) {
+    // Se já está ativo, controla pause/resume baseado no timer
+    if (isRunning && fireworksPaused) {
+      resumeNewYearEffect();
+    } else if (!isRunning && !fireworksPaused) {
+      pauseNewYearEffect();
+    }
+  } else if (newYearEnabled && !isCurrentlyActive && !isRunning) {
+    // Se o efeito está habilitado mas o timer não está rodando, não faz nada
+    // (aguarda o timer iniciar para ativar o efeito)
+    console.log('New Year effect enabled but timer not running - waiting');
   }
 }
 
