@@ -226,16 +226,22 @@
             Definir Tempo Personalizado
           </h2>
           <p class="text-white/70 text-sm mt-2">
-            Digite o tempo desejado em minutos e inicie a contagem.
+            Digite o tempo desejado e inicie a contagem.
           </p>
         </div>
 
         <div class="w-full flex items-center justify-center gap-2 mb-6">
-          <input type="number" id="customTimeInput"
-            class="w-1/2 px-4 py-2 rounded-md text-white bg-slate-800 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            placeholder="Digite o tempo (min)" min="1" aria-label="Tempo personalizado" />
+          <div class="flex gap-2 items-center">
+            <input type="number" id="customMinutes"
+              class="w-20 px-3 py-2 rounded-md text-white bg-slate-800 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-center"
+              placeholder="Min" min="0" max="59" aria-label="Minutos" />
+            <span class="text-white font-medium">:</span>
+            <input type="number" id="customSeconds"
+              class="w-20 px-3 py-2 rounded-md text-white bg-slate-800 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-center"
+              placeholder="Seg" min="0" max="59" aria-label="Segundos" />
+          </div>
           <button id="setCustomTime"
-            class="btn btn-primary px-3 py-2 rounded-md text-black bg-yellow-500 hover:bg-yellow-600">
+            class="btn btn-primary px-4 py-2 rounded-md text-black bg-yellow-500 hover:bg-yellow-600 font-medium">
             Definir e Iniciar
           </button>
         </div>
@@ -447,7 +453,55 @@
         Espaço para anúncio
       </div>
     </div>
+
+    <!-- Personalization Card -->
+    <div class="w-full max-w-2xl mt-8 mb-8">
+      <section
+        class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6 shadow-2xl"
+        aria-label="Personalização"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <i data-lucide="settings" class="w-6 h-6 text-white"></i>
+          <h2 class="text-xl font-semibold text-white">Personalização</h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Snow Effect Toggle -->
+          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
+            <div class="flex items-center gap-3">
+              <i data-lucide="snowflake" class="w-5 h-5 text-white/70"></i>
+              <div>
+                <h3 class="text-white font-medium">Efeito Natalino</h3>
+                <p class="text-white/60 text-sm">Adiciona neve, estrelas e elementos natalinos caindo na tela</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="snowToggle" class="sr-only peer">
+              <div class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+
+          <!-- Sound Effect Toggle -->
+          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
+            <div class="flex items-center gap-3">
+              <i data-lucide="alarm-clock" class="w-5 h-5 text-white/70"></i>
+              <div>
+                <h3 class="text-white font-medium">Alarme de Relógio</h3>
+                <p class="text-white/60 text-sm">Toca um alarme tradicional quando o cronômetro termina</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="soundToggle" class="sr-only peer">
+              <div class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
+
+  <!-- Snow Effect Container -->
+  <div id="snowContainer" class="fixed inset-0 pointer-events-none z-30 hidden"></div>
 
   <footer class="relative z-20 w-full mt-16 mb-6">
     <div class="max-w-4xl mx-auto px-4 text-center text-white/60 text-sm">

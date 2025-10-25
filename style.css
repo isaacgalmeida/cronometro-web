@@ -602,8 +602,129 @@ select:focus-visible {
   #mp3PlayerSection .flex {
     flex-direction: column;
   }
-  
+
   #mp3PlayerSection button {
     width: 100%;
+  }
+} /* Snow Eff
+ect Styles */
+#snowContainer {
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* Toggle Switch Styles */
+.peer:checked ~ div {
+  background-color: #2563eb;
+}
+
+.peer:focus ~ div {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Custom Time Input Styles */
+#customMinutes,
+#customSeconds {
+  -moz-appearance: textfield;
+}
+
+#customMinutes::-webkit-outer-spin-button,
+#customMinutes::-webkit-inner-spin-button,
+#customSeconds::-webkit-outer-spin-button,
+#customSeconds::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Personalization Card Animations */
+.personalization-toggle {
+  transition: all 0.3s ease;
+}
+
+.personalization-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Snow Animation Performance */
+#snowContainer div {
+  will-change: transform;
+}
+
+/* Responsive adjustments for custom time */
+@media (max-width: 480px) {
+  #customMinutes,
+  #customSeconds {
+    width: 60px;
+    font-size: 14px;
+  }
+}
+
+/* Sound effect visual feedback */
+.sound-playing {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+/* Christmas Effect Enhancements */
+#snowContainer {
+  overflow: hidden;
+}
+
+/* Christmas elements glow effect */
+#snowContainer div {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+}
+
+/* Emoji elements special styling */
+#snowContainer div:not([style*="background"]) {
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+    sans-serif;
+}
+
+/* Performance optimizations for Christmas effect */
+#snowContainer * {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Responsive Christmas elements */
+@media (max-width: 768px) {
+  #snowContainer div {
+    font-size: 0.8em !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #snowContainer div {
+    font-size: 0.6em !important;
+  }
+}
+
+/* Christmas theme colors for toggles */
+.peer:checked ~ div {
+  background: linear-gradient(45deg, #dc2626, #16a34a);
+}
+
+/* Sound effect visual indicator */
+.timer-finished {
+  animation: christmas-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes christmas-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(22, 163, 74, 0.5);
   }
 }

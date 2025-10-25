@@ -52,6 +52,12 @@ function isMusicAvailableForSync() {
 }
 
 function detectSelectedMusic() {
+  // Verifica se há MP3 personalizado primeiro
+  if (typeof mp3Data !== 'undefined' && mp3Data) {
+    setMusicSelected('mp3://custom');
+    return 'mp3://custom';
+  }
+
   // Verifica música preset selecionada
   const presetSelect = document.getElementById('presetMusic');
   if (presetSelect && presetSelect.value) {
@@ -249,8 +255,8 @@ function tick() {
     clearTimerCache();
     endTimestamp = null;
 
-    // Atualiza estado do loop do MP3 quando timer termina
-    updateMp3LoopState();
+    // Atualiza efeito natalino baseado no estado do timer
+    updateChristmasEffectBasedOnTimer();
 
     // Sincronizar música quando timer termina
     syncMusicWithTimer('stop');
@@ -259,6 +265,21 @@ function tick() {
     const statusEl = document.getElementById('timer-status');
     if (statusEl) {
       statusEl.textContent = '⏰ Tempo esgotado!';
+    }
+
+    // Toca alarme se habilitado
+    const soundEnabled = localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
+    if (soundEnabled) {
+      playBeepSound();
+
+      // Adiciona efeito visual de alarme
+      const timerEl = document.getElementById('timer');
+      if (timerEl) {
+        timerEl.classList.add('timer-finished');
+        setTimeout(() => {
+          timerEl.classList.remove('timer-finished');
+        }, 5000); // Remove após 5 segundos (duração do alarme)
+      }
     }
 
     showNotification('⏰ Tempo esgotado!', 'O timer chegou ao fim.');
@@ -279,8 +300,8 @@ function startTimer(min) {
 
   document.body.classList.add('timer-running');
 
-  // Atualiza estado do loop do MP3
-  updateMp3LoopState();
+  // Atualiza efeito natalino baseado no estado do timer
+  updateChristmasEffectBasedOnTimer();
 
   // Re-habilita sync e sincroniza música quando timer inicia
   reEnableSync();
@@ -313,8 +334,8 @@ function startCurrentTimer() {
     document.body.classList.add('timer-running');
     updateDisplay();
 
-    // Atualiza estado do loop do MP3
-    updateMp3LoopState();
+    // Atualiza efeito natalino baseado no estado do timer
+    updateChristmasEffectBasedOnTimer();
 
     // Re-habilita sync e sincroniza música quando timer atual inicia
     reEnableSync();
@@ -334,8 +355,8 @@ function pauseTimer() {
   document.body.classList.remove('timer-running');
   updateDisplay();
 
-  // Atualiza estado do loop do MP3
-  updateMp3LoopState();
+  // Atualiza efeito natalino baseado no estado do timer
+  updateChristmasEffectBasedOnTimer();
 
   // Sincronizar música quando timer pausa
   syncMusicWithTimer('pause');
@@ -354,8 +375,8 @@ function resetTimer() {
   document.body.classList.remove('timer-running');
   clearTimerCache();
 
-  // Atualiza estado do loop do MP3
-  updateMp3LoopState();
+  // Atualiza efeito natalino baseado no estado do timer
+  updateChristmasEffectBasedOnTimer();
 
   // Sincronizar música quando timer reseta
   syncMusicWithTimer('reset');
@@ -1165,7 +1186,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     initializeEventListeners();
     initializeImageUpload();
-    initializeMp3Upload();
+    initializePersonalization();
+    initializeCustomTime();
 
     // restaura estado ANTES de permitir salvar
     const savedState = loadTimerState();
@@ -1225,7 +1247,8 @@ if (document.readyState !== 'loading') {
       if (typeof lucide !== 'undefined') lucide.createIcons();
       initializeEventListeners();
       initializeImageUpload();
-      initializeMp3Upload();
+      initializePersonalization();
+      initializeCustomTime();
 
       const savedState = loadTimerState();
       if (savedState) {
@@ -1479,6 +1502,320 @@ function removeCustomImage() {
   }
 }
 
+// -------------------- Snow Effect Manager --------------------
+const SNOW_ENABLED_KEY = 'cronometro_snow_enabled';
+const SOUND_ENABLED_KEY = 'cronometro_sound_enabled';
+
+let christmasElements = [];
+let christmasAnimationId = null;
+
+// Tipos de elementos natalinos
+const CHRISTMAS_TYPES = {
+  SNOWFLAKE: { symbol: '❄️', weight: 0.6 },
+  STAR: { symbol: '⭐', weight: 0.15 },
+  SPARKLE: { symbol: '✨', weight: 0.1 },
+  BELL: { symbol: '🔔', weight: 0.05 },
+  GIFT: { symbol: '🎁', weight: 0.03 },
+  TREE: { symbol: '🎄', weight: 0.02 },
+  CANDY: { symbol: '🍭', weight: 0.03 },
+  HOLLY: { symbol: '🎅', weight: 0.02 }
+};
+
+function getRandomChristmasType() {
+  const random = Math.random();
+  let cumulative = 0;
+
+  for (const [type, config] of Object.entries(CHRISTMAS_TYPES)) {
+    cumulative += config.weight;
+    if (random <= cumulative) {
+      return { type, ...config };
+    }
+  }
+
+  return { type: 'SNOWFLAKE', ...CHRISTMAS_TYPES.SNOWFLAKE };
+}
+
+function createChristmasElement() {
+  const elementType = getRandomChristmasType();
+  const isEmoji = elementType.symbol.length > 1;
+
+  return {
+    x: Math.random() * window.innerWidth,
+    y: -20,
+    size: isEmoji ? Math.random() * 8 + 12 : Math.random() * 3 + 2,
+    speed: Math.random() * 1.5 + 0.5,
+    opacity: Math.random() * 0.6 + 0.4,
+    drift: Math.random() * 1.5 - 0.75,
+    rotation: Math.random() * 360,
+    rotationSpeed: Math.random() * 4 - 2,
+    symbol: elementType.symbol,
+    type: elementType.type,
+    isEmoji: isEmoji
+  };
+}
+
+function updateChristmasElements() {
+  const container = document.getElementById('snowContainer');
+  if (!container) return;
+
+  // Limpa container
+  container.innerHTML = '';
+
+  // Atualiza posições dos elementos
+  christmasElements = christmasElements.filter(element => {
+    element.y += element.speed;
+    element.x += element.drift;
+    element.rotation += element.rotationSpeed;
+
+    // Remove elementos que saíram da tela
+    if (element.y > window.innerHeight + 50 || element.x < -50 || element.x > window.innerWidth + 50) {
+      return false;
+    }
+
+    // Cria elemento visual
+    const christmasEl = document.createElement('div');
+
+    if (element.isEmoji) {
+      // Para emojis
+      christmasEl.style.cssText = `
+        position: absolute;
+        left: ${element.x}px;
+        top: ${element.y}px;
+        font-size: ${element.size}px;
+        opacity: ${element.opacity};
+        pointer-events: none;
+        transform: rotate(${element.rotation}deg);
+        user-select: none;
+        z-index: 31;
+      `;
+      christmasEl.textContent = element.symbol;
+    } else {
+      // Para flocos de neve tradicionais
+      christmasEl.style.cssText = `
+        position: absolute;
+        left: ${element.x}px;
+        top: ${element.y}px;
+        width: ${element.size}px;
+        height: ${element.size}px;
+        background: white;
+        border-radius: 50%;
+        opacity: ${element.opacity};
+        pointer-events: none;
+        transform: rotate(${element.rotation}deg);
+        box-shadow: 0 0 ${element.size}px rgba(255, 255, 255, 0.3);
+      `;
+    }
+
+    container.appendChild(christmasEl);
+    return true;
+  });
+
+  // Adiciona novos elementos ocasionalmente
+  if (Math.random() < 0.25) {
+    christmasElements.push(createChristmasElement());
+  }
+
+  christmasAnimationId = requestAnimationFrame(updateChristmasElements);
+}
+
+function startChristmasEffect() {
+  const container = document.getElementById('snowContainer');
+  if (container) {
+    container.classList.remove('hidden');
+    christmasElements = [];
+    // Inicia com alguns elementos já na tela
+    for (let i = 0; i < 30; i++) {
+      const element = createChristmasElement();
+      element.y = Math.random() * window.innerHeight; // Distribui pela tela
+      christmasElements.push(element);
+    }
+    updateChristmasElements();
+    console.log('Christmas effect started');
+  }
+}
+
+function stopChristmasEffect() {
+  const container = document.getElementById('snowContainer');
+  if (container) {
+    container.classList.add('hidden');
+    container.innerHTML = '';
+  }
+  if (christmasAnimationId) {
+    cancelAnimationFrame(christmasAnimationId);
+    christmasAnimationId = null;
+  }
+  christmasElements = [];
+  console.log('Christmas effect stopped');
+}
+
+function updateChristmasEffectBasedOnTimer() {
+  const snowEnabled = localStorage.getItem(SNOW_ENABLED_KEY) === 'true';
+  const shouldRun = snowEnabled && isRunning;
+  const isCurrentlyRunning = !!christmasAnimationId;
+
+  console.log('Christmas effect check:', {
+    snowEnabled,
+    isRunning,
+    shouldRun,
+    isCurrentlyRunning
+  });
+
+  if (shouldRun && !isCurrentlyRunning) {
+    // Inicia efeito se deveria rodar mas não está rodando
+    startChristmasEffect();
+  } else if (!shouldRun && isCurrentlyRunning) {
+    // Para efeito se não deveria rodar mas está rodando
+    stopChristmasEffect();
+  }
+  // Se shouldRun === isCurrentlyRunning, não faz nada (já está no estado correto)
+}
+
+// -------------------- Sound Effect Manager --------------------
+function playBeepSound() {
+  try {
+    // Cria um alarme de relógio tradicional por 5 segundos
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const duration = 5; // 5 segundos
+    const ringInterval = 0.5; // intervalo entre "ring-ring"
+    const ringDuration = 0.15; // duração de cada "ring"
+    const ringGap = 0.05; // pausa entre os dois rings
+
+    for (let i = 0; i < duration / ringInterval; i++) {
+      const ringStartTime = audioContext.currentTime + (i * ringInterval);
+
+      // Primeiro "ring"
+      createAlarmRing(audioContext, ringStartTime, ringDuration);
+
+      // Segundo "ring" (ring-ring)
+      createAlarmRing(audioContext, ringStartTime + ringDuration + ringGap, ringDuration);
+    }
+
+    console.log('Alarm clock sound started (5 seconds)');
+  } catch (error) {
+    console.error('Error playing alarm sound:', error);
+  }
+}
+
+function createAlarmRing(audioContext, startTime, duration) {
+  // Cria o som característico de alarme de relógio com múltiplas frequências
+  const frequencies = [800, 1000, 1200]; // Harmônicos para som mais rico
+  const volumes = [0.3, 0.2, 0.1]; // Volumes decrescentes para os harmônicos
+
+  frequencies.forEach((freq, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(freq, startTime);
+    oscillator.type = 'square'; // Onda quadrada para som mais "metálico"
+
+    // Envelope rápido e agressivo típico de alarme
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(volumes[index], startTime + 0.01);
+    gainNode.gain.linearRampToValueAtTime(volumes[index], startTime + duration - 0.02);
+    gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+  });
+
+  // Adiciona um pouco de ruído para simular o mecanismo do relógio
+  const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * duration, audioContext.sampleRate);
+  const noiseData = noiseBuffer.getChannelData(0);
+
+  for (let i = 0; i < noiseData.length; i++) {
+    noiseData[i] = (Math.random() * 2 - 1) * 0.02; // Ruído baixo
+  }
+
+  const noiseSource = audioContext.createBufferSource();
+  const noiseGain = audioContext.createGain();
+
+  noiseSource.buffer = noiseBuffer;
+  noiseSource.connect(noiseGain);
+  noiseGain.connect(audioContext.destination);
+
+  noiseGain.gain.setValueAtTime(0.1, startTime);
+  noiseGain.gain.linearRampToValueAtTime(0, startTime + duration);
+
+  noiseSource.start(startTime);
+}
+
+// -------------------- Personalization Manager --------------------
+function initializePersonalization() {
+  const snowToggle = document.getElementById('snowToggle');
+  const soundToggle = document.getElementById('soundToggle');
+
+  if (!snowToggle || !soundToggle) return;
+
+  // Carrega configurações salvas
+  const snowEnabled = localStorage.getItem(SNOW_ENABLED_KEY) === 'true';
+  const soundEnabled = localStorage.getItem(SOUND_ENABLED_KEY) === 'true'; // padrão false
+
+  snowToggle.checked = snowEnabled;
+  soundToggle.checked = soundEnabled;
+
+  // Aplica configurações iniciais - só inicia se timer estiver rodando
+  if (snowEnabled && isRunning) {
+    startChristmasEffect();
+  }
+
+  // Event listeners
+  snowToggle.addEventListener('change', (e) => {
+    const enabled = e.target.checked;
+    localStorage.setItem(SNOW_ENABLED_KEY, enabled.toString());
+
+    if (enabled && isRunning) {
+      startChristmasEffect();
+    } else {
+      stopChristmasEffect();
+    }
+  });
+
+  soundToggle.addEventListener('change', (e) => {
+    const enabled = e.target.checked;
+    localStorage.setItem(SOUND_ENABLED_KEY, enabled.toString());
+  });
+}
+
+// -------------------- Custom Time Manager --------------------
+function initializeCustomTime() {
+  const setCustomTimeBtn = document.getElementById('setCustomTime');
+  const customMinutes = document.getElementById('customMinutes');
+  const customSeconds = document.getElementById('customSeconds');
+
+  if (!setCustomTimeBtn || !customMinutes || !customSeconds) return;
+
+  setCustomTimeBtn.addEventListener('click', () => {
+    const minutes = parseInt(customMinutes.value) || 0;
+    const seconds = parseInt(customSeconds.value) || 0;
+
+    if (minutes === 0 && seconds === 0) {
+      alert('Por favor, insira um tempo válido (minutos e/ou segundos).');
+      return;
+    }
+
+    // Converte para minutos decimais para usar com startTimer existente
+    const totalMinutes = minutes + (seconds / 60);
+    startTimer(totalMinutes);
+
+    // Limpa os campos
+    customMinutes.value = '';
+    customSeconds.value = '';
+  });
+
+  // Validação de entrada
+  [customMinutes, customSeconds].forEach(input => {
+    input.addEventListener('input', (e) => {
+      let value = parseInt(e.target.value);
+      if (value < 0) e.target.value = 0;
+      if (e.target === customSeconds && value > 59) e.target.value = 59;
+      if (e.target === customMinutes && value > 999) e.target.value = 999;
+    });
+  });
+}
+
 // render inicial (não persiste porque canPersist=false)
 updateDisplay();
 // -------------------- MP3 Upload and Player Manager --------------------
@@ -1521,7 +1858,7 @@ function initializeMp3Upload() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const audioData = e.target.result;
-      
+
       // Salva no localStorage
       saveMp3Data(audioData, {
         name: file.name,
@@ -1612,7 +1949,7 @@ function loadSavedMp3() {
   try {
     const savedMp3 = localStorage.getItem(MP3_STORAGE_KEY);
     const savedInfo = localStorage.getItem(MP3_INFO_KEY);
-    
+
     if (savedMp3 && savedInfo) {
       const fileInfo = JSON.parse(savedInfo);
       applyMp3(savedMp3, fileInfo.name);
@@ -1632,23 +1969,23 @@ function applyMp3(audioData, fileName) {
     // Configura o player
     mp3Player.src = audioData;
     mp3Player.load();
-    
+
     // Mostra informações do arquivo
     mp3Info.textContent = `🎵 ${fileName}`;
-    
+
     // Mostra a seção do player
     mp3PlayerSection.classList.remove('hidden');
-    
+
     // Armazena os dados
     mp3Data = audioData;
-    
+
     console.log('MP3 aplicado:', fileName);
   }
 }
 
 function updateMp3LoopState() {
   const mp3Player = document.getElementById('mp3Player');
-  
+
   if (mp3Player) {
     // Habilita loop apenas quando o timer está rodando
     mp3Player.loop = isRunning && timeLeft > 0;
@@ -1658,15 +1995,15 @@ function updateMp3LoopState() {
 
 function playMp3() {
   const mp3Player = document.getElementById('mp3Player');
-  
+
   if (mp3Player && mp3Data) {
     try {
       // Para qualquer música do YouTube que esteja tocando
       stopMusic();
-      
+
       // Atualiza o estado do loop antes de reproduzir
       updateMp3LoopState();
-      
+
       // Reproduz o MP3
       mp3Player.currentTime = 0;
       mp3Player.play().then(() => {
@@ -1686,7 +2023,7 @@ function playMp3() {
 
 function pauseMp3() {
   const mp3Player = document.getElementById('mp3Player');
-  
+
   if (mp3Player && !mp3Player.paused) {
     mp3Player.pause();
     setMusicPlaying(false);
@@ -1696,7 +2033,7 @@ function pauseMp3() {
 
 function resumeMp3() {
   const mp3Player = document.getElementById('mp3Player');
-  
+
   if (mp3Player && mp3Player.paused && mp3Data) {
     mp3Player.play().then(() => {
       setMusicPlaying(true);
@@ -1710,7 +2047,7 @@ function resumeMp3() {
 
 function stopMp3() {
   const mp3Player = document.getElementById('mp3Player');
-  
+
   if (mp3Player) {
     mp3Player.pause();
     mp3Player.currentTime = 0;
@@ -1725,31 +2062,31 @@ function removeMp3() {
     // Remove do localStorage
     localStorage.removeItem(MP3_STORAGE_KEY);
     localStorage.removeItem(MP3_INFO_KEY);
-    
+
     // Para o player
     stopMp3();
-    
+
     // Limpa os dados
     mp3Data = null;
-    
+
     // Esconde a seção do player
     const mp3PlayerSection = document.getElementById('mp3PlayerSection');
     const mp3Upload = document.getElementById('mp3Upload');
-    
+
     if (mp3PlayerSection) {
       mp3PlayerSection.classList.add('hidden');
     }
-    
+
     if (mp3Upload) {
       mp3Upload.value = '';
     }
-    
+
     showMp3Status('🗑️ MP3 removido com sucesso.', 'success');
-    
+
     setTimeout(() => {
       showMp3Status('', '');
     }, 3000);
-    
+
   } catch (error) {
     console.error('Erro ao remover MP3:', error);
     showMp3Status('❌ Erro ao remover MP3', 'error');
@@ -1773,41 +2110,13 @@ function showMp3Status(message, type = '') {
   }
 }
 
-// Atualiza as funções de sincronização para incluir MP3
-function detectSelectedMusic() {
-  // Verifica se há MP3 personalizado
-  if (mp3Data) {
-    setMusicSelected('mp3://custom');
-    return 'mp3://custom';
-  }
-
-  // Verifica música preset selecionada
-  const presetSelect = document.getElementById('presetMusic');
-  if (presetSelect && presetSelect.value) {
-    setMusicSelected(presetSelect.value);
-    return presetSelect.value;
-  }
-
-  // Verifica URL customizada válida
-  const customInput = document.getElementById('youtubeLink');
-  if (customInput && customInput.value.trim()) {
-    const url = customInput.value.trim();
-    if (isValidYouTubeUrl(url)) {
-      setMusicSelected(url);
-      return url;
-    }
-  }
-
-  // Nenhuma música válida encontrada
-  setMusicSelected('');
-  return '';
-}
+// Função detectSelectedMusic já definida acima - removendo duplicação
 
 // Atualiza as funções de controle de música para incluir MP3
 function handleTimerStart() {
   try {
     const selectedUrl = detectSelectedMusic();
-    
+
     if (selectedUrl === 'mp3://custom') {
       updateMp3LoopState(); // Atualiza loop antes de retomar
       resumeMp3();
