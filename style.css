@@ -728,3 +728,84 @@ ect Styles */
     box-shadow: 0 0 40px rgba(22, 163, 74, 0.5);
   }
 }
+/* New Year Effect Styles */
+#newYearContainer {
+  overflow: hidden;
+  z-index: 31;
+  pointer-events: none;
+}
+
+/* New Year elements glow effect */
+#newYearContainer div {
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
+}
+
+/* Firework explosion animation */
+@keyframes fireworkExplosion {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.firework-explosion {
+  animation: fireworkExplosion 0.8s ease-out forwards;
+}
+
+/* Confetti shimmer effect */
+@keyframes confettiShimmer {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 2px rgba(255, 215, 0, 0.3));
+  }
+  50% {
+    filter: brightness(1.3) drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+  }
+}
+
+/* New Year theme colors for toggles */
+#newYearToggle:checked ~ div {
+  background: linear-gradient(45deg, #ffd700, #ffa500, #ff69b4);
+}
+
+/* Performance optimizations for New Year effect */
+#newYearContainer * {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Responsive New Year elements */
+@media (max-width: 768px) {
+  #newYearContainer div {
+    font-size: 0.9em !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #newYearContainer div {
+    font-size: 0.7em !important;
+  }
+}
+
+/* New Year celebration pulse effect */
+.new-year-celebration {
+  animation: new-year-pulse 1s ease-in-out infinite;
+}
+
+@keyframes new-year-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 165, 0, 0.6);
+  }
+}

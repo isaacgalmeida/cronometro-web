@@ -331,8 +331,9 @@ function tick() {
     clearTimerCache();
     endTimestamp = null;
 
-    // Atualiza efeito natalino baseado no estado do timer
+    // Atualiza efeitos baseados no estado do timer
     updateChristmasEffectBasedOnTimer();
+    updateNewYearEffectBasedOnTimer();
 
     // Sincronizar música quando timer termina
     syncMusicWithTimer('stop');
@@ -376,8 +377,9 @@ function startTimer(min) {
 
   document.body.classList.add('timer-running');
 
-  // Atualiza efeito natalino baseado no estado do timer
+  // Atualiza efeitos baseados no estado do timer
   updateChristmasEffectBasedOnTimer();
+  updateNewYearEffectBasedOnTimer();
 
   // Re-habilita sync e sincroniza música quando timer inicia
   reEnableSync();
@@ -410,8 +412,9 @@ function startCurrentTimer() {
     document.body.classList.add('timer-running');
     updateDisplay();
 
-    // Atualiza efeito natalino baseado no estado do timer
+    // Atualiza efeitos baseados no estado do timer
     updateChristmasEffectBasedOnTimer();
+    updateNewYearEffectBasedOnTimer();
 
     // Re-habilita sync e sincroniza música quando timer atual inicia
     reEnableSync();
@@ -431,8 +434,9 @@ function pauseTimer() {
   document.body.classList.remove('timer-running');
   updateDisplay();
 
-  // Atualiza efeito natalino baseado no estado do timer
+  // Atualiza efeitos baseados no estado do timer
   updateChristmasEffectBasedOnTimer();
+  updateNewYearEffectBasedOnTimer();
 
   // Sincronizar música quando timer pausa
   syncMusicWithTimer('pause');
@@ -451,11 +455,144 @@ function resetTimer() {
   document.body.classList.remove('timer-running');
   clearTimerCache();
 
-  // Atualiza efeito natalino baseado no estado do timer
-  updateChristmasEffectBasedOnTimer();
+  // RESET COMPLETO - Para todos os efeitos e música
+  resetAllEffectsAndMusic();
+}
 
-  // Sincronizar música quando timer reseta
-  syncMusicWithTimer('reset');
+function resetAllEffectsAndMusic() {
+  console.log('Resetando todos os efeitos e música...');
+
+  // Para e reseta efeito natalino
+  stopChristmasEffect();
+
+  // Para e reseta efeito de Ano Novo
+  stopNewYearEffect();
+
+  // Para música completamente
+  stopMusic();
+
+  // Limpa seleção de música
+  clearMusicSelection();
+
+  // Limpa cache de música
+  clearMusicCache();
+
+  // Reseta estado da música
+  musicState.isSelected = false;
+  musicState.isPlaying = false;
+  musicState.currentUrl = '';
+  musicState.lastAction = 'manual';
+
+  // Limpa URL pausada
+  if (typeof pausedMusicUrl !== 'undefined') {
+    pausedMusicUrl = '';
+  }
+
+  // Limpa campos de tempo personalizado
+  clearCustomTimeInputs();
+
+  // Reseta todas as configurações do localStorage e toggles
+  resetAllSettings();
+
+  // Atualiza status com mensagem mais detalhada
+  showMusicStatus('🔄 Reset completo: Timer, música e efeitos resetados');
+  updateSyncStatusDisplay();
+
+  // Mostra notificação de cache também
+  showCacheStatus('Reset completo realizado', 'info');
+
+  console.log('Reset completo finalizado');
+}
+
+function clearMusicSelection() {
+  // Limpa dropdown de música preset
+  const presetSelect = document.getElementById('presetMusic');
+  if (presetSelect) {
+    presetSelect.value = '';
+  }
+
+  // Limpa campo de URL customizada
+  const customInput = document.getElementById('youtubeLink');
+  if (customInput) {
+    customInput.value = '';
+  }
+
+  // Limpa player de música
+  const musicPlayer = document.getElementById('musicPlayer');
+  if (musicPlayer) {
+    musicPlayer.src = '';
+    musicPlayer.style.width = '0';
+    musicPlayer.style.height = '0';
+    musicPlayer.innerHTML = '';
+  }
+}
+
+function clearCustomTimeInputs() {
+  // Limpa campos de minutos e segundos personalizados
+  const customMinutes = document.getElementById('customMinutes');
+  const customSeconds = document.getElementById('customSeconds');
+
+  if (customMinutes) {
+    customMinutes.value = '';
+  }
+
+  if (customSeconds) {
+    customSeconds.value = '';
+  }
+}
+
+function resetAllSettings() {
+  // Reseta todas as configurações do localStorage e toggles na tela
+  console.log('Resetando todas as configurações...');
+
+  // Reseta toggles de efeitos
+  const snowToggle = document.getElementById('snowToggle');
+  const newYearToggle = document.getElementById('newYearToggle');
+  const soundToggle = document.getElementById('soundToggle');
+
+  if (snowToggle) {
+    snowToggle.checked = false;
+    localStorage.removeItem(SNOW_ENABLED_KEY);
+  }
+
+  if (newYearToggle) {
+    newYearToggle.checked = false;
+    localStorage.removeItem(NEW_YEAR_ENABLED_KEY);
+  }
+
+  if (soundToggle) {
+    soundToggle.checked = false;
+    localStorage.removeItem(SOUND_ENABLED_KEY);
+  }
+
+  // Limpa configurações de mensagens personalizadas
+  localStorage.removeItem(CACHE_KEYS.RUN_TEXT_SELECTED);
+  localStorage.removeItem(CACHE_KEYS.RUN_TEXT_CUSTOMS);
+
+  // Limpa outras configurações relacionadas ao cronômetro
+  localStorage.removeItem(CACHE_KEYS.TIMER_CONFIG);
+
+  // Reseta seleção de mensagem para a primeira opção
+  resetRunMessageSelection();
+
+  console.log('Configurações resetadas');
+}
+
+function resetRunMessageSelection() {
+  // Reseta a seleção de mensagem para a primeira opção disponível
+  const messageOptions = document.getElementById('messageOptions');
+  if (messageOptions) {
+    // Remove seleção ativa de todos os pills
+    const pills = messageOptions.querySelectorAll('.msg-option');
+    pills.forEach(pill => pill.classList.remove('active'));
+
+    // Seleciona o primeiro pill se existir
+    if (pills.length > 0 && !pills[0].textContent.includes('➕') && !pills[0].textContent.includes('🗑️')) {
+      pills[0].classList.add('active');
+      const firstMessage = pills[0].textContent;
+      applySelectedRunText(firstMessage);
+    }
+  }
 }
 
 function updateButtonStates(state) {
@@ -1288,6 +1425,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         countdown = setInterval(tick, 1000);
         updateButtonStates('running');
         document.body.classList.add('timer-running');
+
+        // Atualiza efeitos após restaurar timer
+        updateChristmasEffectBasedOnTimer();
+        updateNewYearEffectBasedOnTimer();
+
         showCacheStatus('Timer restaurado', 'success');
       } else {
         updateButtonStates('stopped');
@@ -1365,6 +1507,10 @@ if (document.readyState !== 'loading') {
           countdown = setInterval(tick, 1000);
           updateButtonStates('running');
           document.body.classList.add('timer-running');
+
+          // Atualiza efeitos após restaurar timer (fallback)
+          updateChristmasEffectBasedOnTimer();
+          updateNewYearEffectBasedOnTimer();
         } else {
           updateButtonStates('stopped');
         }
@@ -1790,6 +1936,262 @@ function updateChristmasEffectBasedOnTimer() {
   // Se shouldRun === isCurrentlyRunning, não faz nada (já está no estado correto)
 }
 
+// -------------------- New Year Effect Manager --------------------
+const NEW_YEAR_ENABLED_KEY = 'cronometro_newyear_enabled';
+
+let newYearElements = [];
+let newYearAnimationId = null;
+
+// Tipos de elementos de Ano Novo - Focado em Fogos de Artifício
+const NEW_YEAR_TYPES = {
+  FIREWORK_RED: { symbol: '🎆', weight: 0.25, color: '#FF4444' },
+  FIREWORK_BLUE: { symbol: '🎇', weight: 0.25, color: '#4444FF' },
+  FIREWORK_GOLD: { symbol: '🎆', weight: 0.2, color: '#FFD700' },
+  FIREWORK_GREEN: { symbol: '🎇', weight: 0.15, color: '#44FF44' },
+  FIREWORK_PURPLE: { symbol: '🎆', weight: 0.1, color: '#AA44FF' },
+  SPARKLE_EXPLOSION: { symbol: '✨', weight: 0.05, color: '#FFFFFF' }
+};
+
+function getRandomNewYearType() {
+  const random = Math.random();
+  let cumulative = 0;
+
+  for (const [type, config] of Object.entries(NEW_YEAR_TYPES)) {
+    cumulative += config.weight;
+    if (random <= cumulative) {
+      return { type, ...config };
+    }
+  }
+
+  return { type: 'CONFETTI_GOLD', ...NEW_YEAR_TYPES.CONFETTI_GOLD };
+}
+
+function createNewYearElement() {
+  const elementType = getRandomNewYearType();
+  const isEmoji = elementType.symbol.length > 1;
+  const isFirework = elementType.type.includes('FIREWORK');
+
+  return {
+    x: Math.random() * window.innerWidth,
+    y: isFirework ? window.innerHeight + 20 : -30, // Fogos começam de baixo
+    size: isEmoji ? Math.random() * 12 + 18 : Math.random() * 5 + 4,
+    speed: isFirework ? Math.random() * 4 + 3 : Math.random() * 1.5 + 0.5,
+    opacity: Math.random() * 0.8 + 0.2,
+    drift: Math.random() * 1 - 0.5,
+    rotation: Math.random() * 360,
+    rotationSpeed: Math.random() * 8 - 4,
+    symbol: elementType.symbol,
+    color: elementType.color,
+    type: elementType.type,
+    isEmoji: isEmoji,
+    // Efeito especial para fogos de artifício
+    isFirework: isFirework,
+    fireworkPhase: 0, // 0 = subindo, 1 = explodindo, 2 = partículas caindo
+    explosionTime: 0,
+    targetHeight: Math.random() * (window.innerHeight * 0.4) + (window.innerHeight * 0.1) // Entre 10% e 50% da tela
+  };
+}
+
+function updateNewYearElements() {
+  const container = document.getElementById('newYearContainer');
+  if (!container) return;
+
+  // Limpa container
+  container.innerHTML = '';
+
+  // Atualiza posições dos elementos
+  newYearElements = newYearElements.filter(element => {
+    // Lógica especial para fogos de artifício
+    if (element.isFirework) {
+      if (element.fireworkPhase === 0) {
+        // Fase de subida - fogo sobe da parte inferior
+        element.y -= element.speed;
+        element.x += element.drift * 0.3; // Leve deriva lateral
+
+        // Explode quando atinge a altura alvo
+        if (element.y <= element.targetHeight) {
+          element.fireworkPhase = 1;
+          element.explosionTime = 0;
+          // Cria explosão maior e mais colorida
+          createFireworkExplosion(element.x, element.y, element.color);
+          return false; // Remove o fogo original após explosão
+        }
+      }
+    } else if (element.type === 'EXPLOSION_PARTICLE' || element.type === 'EXPLOSION_CENTER') {
+      // Lógica para partículas de explosão
+      element.life--;
+      if (element.life <= 0) return false;
+
+      // Movimento das partículas
+      element.x += element.drift;
+      element.y += element.verticalSpeed;
+      element.verticalSpeed += 0.1; // Gravidade
+      element.drift *= 0.98; // Resistência do ar
+      element.rotation += element.rotationSpeed;
+
+      // Fade out baseado na vida restante
+      element.opacity = Math.max(0, element.life / 60);
+
+    } else {
+      // Movimento normal para sparkles e outros elementos
+      element.y += element.speed;
+      element.x += element.drift;
+      element.rotation += element.rotationSpeed;
+
+      // Sparkles piscam
+      if (element.type === 'SPARKLE_EXPLOSION') {
+        element.opacity = 0.3 + Math.sin(Date.now() * 0.01) * 0.4;
+      }
+    }
+
+    // Remove elementos que saíram da tela
+    if (element.y > window.innerHeight + 50 || element.x < -50 || element.x > window.innerWidth + 50) {
+      return false;
+    }
+
+    // Cria elemento visual
+    const newYearEl = document.createElement('div');
+
+    if (element.isEmoji) {
+      // Para emojis
+      newYearEl.style.cssText = `
+        position: absolute;
+        left: ${element.x}px;
+        top: ${element.y}px;
+        font-size: ${element.size}px;
+        opacity: ${element.opacity};
+        pointer-events: none;
+        transform: rotate(${element.rotation}deg);
+        user-select: none;
+        z-index: 32;
+        filter: drop-shadow(0 0 ${element.size / 4}px ${element.color});
+      `;
+      newYearEl.textContent = element.symbol;
+    } else {
+      // Para elementos não-emoji (confetes geométricos)
+      newYearEl.style.cssText = `
+        position: absolute;
+        left: ${element.x}px;
+        top: ${element.y}px;
+        width: ${element.size}px;
+        height: ${element.size}px;
+        background: ${element.color};
+        opacity: ${element.opacity};
+        pointer-events: none;
+        transform: rotate(${element.rotation}deg);
+        border-radius: 2px;
+        box-shadow: 0 0 ${element.size}px ${element.color};
+      `;
+    }
+
+    container.appendChild(newYearEl);
+    return true;
+  });
+
+  // Adiciona novos fogos de artifício com mais frequência
+  if (Math.random() < 0.4) {
+    newYearElements.push(createNewYearElement());
+  }
+
+  newYearAnimationId = requestAnimationFrame(updateNewYearElements);
+}
+
+function createFireworkExplosion(x, y, color = '#FFD700') {
+  // Cria múltiplas partículas de explosão em círculo
+  const particleCount = 12 + Math.floor(Math.random() * 8); // 12-20 partículas
+
+  for (let i = 0; i < particleCount; i++) {
+    const angle = (i / particleCount) * Math.PI * 2;
+    const speed = Math.random() * 4 + 2;
+    const particle = {
+      x: x,
+      y: y,
+      size: Math.random() * 4 + 3,
+      speed: 0.5, // Velocidade de queda
+      opacity: 1,
+      drift: Math.cos(angle) * speed, // Velocidade radial
+      verticalSpeed: Math.sin(angle) * speed, // Velocidade vertical inicial
+      rotation: Math.random() * 360,
+      rotationSpeed: Math.random() * 10 - 5,
+      symbol: '✨',
+      color: color,
+      type: 'EXPLOSION_PARTICLE',
+      isEmoji: true,
+      isFirework: false,
+      fireworkPhase: 2, // Fase de partículas caindo
+      life: 60 + Math.random() * 40 // Vida útil em frames
+    };
+    newYearElements.push(particle);
+  }
+
+  // Adiciona algumas partículas extras brilhantes no centro
+  for (let i = 0; i < 3; i++) {
+    const centerParticle = {
+      x: x + (Math.random() - 0.5) * 20,
+      y: y + (Math.random() - 0.5) * 20,
+      size: Math.random() * 6 + 8,
+      speed: 0.2,
+      opacity: 1,
+      drift: (Math.random() - 0.5) * 2,
+      verticalSpeed: Math.random() * 2,
+      rotation: Math.random() * 360,
+      rotationSpeed: Math.random() * 15 - 7.5,
+      symbol: '💥',
+      color: color,
+      type: 'EXPLOSION_CENTER',
+      isEmoji: true,
+      isFirework: false,
+      fireworkPhase: 2,
+      life: 30 + Math.random() * 20
+    };
+    newYearElements.push(centerParticle);
+  }
+}
+
+function startNewYearEffect() {
+  const container = document.getElementById('newYearContainer');
+  if (container) {
+    container.classList.remove('hidden');
+    newYearElements = [];
+    // Inicia com alguns elementos já na tela
+    for (let i = 0; i < 20; i++) {
+      const element = createNewYearElement();
+      element.y = Math.random() * window.innerHeight; // Distribui pela tela
+      newYearElements.push(element);
+    }
+    updateNewYearElements();
+    console.log('New Year effect started');
+  }
+}
+
+function stopNewYearEffect() {
+  const container = document.getElementById('newYearContainer');
+  if (container) {
+    container.classList.add('hidden');
+    container.innerHTML = '';
+  }
+  if (newYearAnimationId) {
+    cancelAnimationFrame(newYearAnimationId);
+    newYearAnimationId = null;
+  }
+  newYearElements = [];
+  console.log('New Year effect stopped');
+}
+
+function updateNewYearEffectBasedOnTimer() {
+  const newYearEnabled = localStorage.getItem(NEW_YEAR_ENABLED_KEY) === 'true';
+  const shouldRun = newYearEnabled && isRunning;
+  const isCurrentlyRunning = !!newYearAnimationId;
+
+  if (shouldRun && !isCurrentlyRunning) {
+    // Inicia efeito se deveria rodar mas não está rodando
+    startNewYearEffect();
+  } else if (!shouldRun && isCurrentlyRunning) {
+    // Para efeito se não deveria rodar mas está rodando
+    stopNewYearEffect();
+  }
+}
+
 // -------------------- Sound Effect Manager --------------------
 function playBeepSound() {
   try {
@@ -1866,19 +2268,25 @@ function createAlarmRing(audioContext, startTime, duration) {
 function initializePersonalization() {
   const snowToggle = document.getElementById('snowToggle');
   const soundToggle = document.getElementById('soundToggle');
+  const newYearToggle = document.getElementById('newYearToggle');
 
-  if (!snowToggle || !soundToggle) return;
+  if (!snowToggle || !soundToggle || !newYearToggle) return;
 
   // Carrega configurações salvas
   const snowEnabled = localStorage.getItem(SNOW_ENABLED_KEY) === 'true';
   const soundEnabled = localStorage.getItem(SOUND_ENABLED_KEY) === 'true'; // padrão false
+  const newYearEnabled = localStorage.getItem(NEW_YEAR_ENABLED_KEY) === 'true'; // padrão false
 
   snowToggle.checked = snowEnabled;
   soundToggle.checked = soundEnabled;
+  newYearToggle.checked = newYearEnabled;
 
   // Aplica configurações iniciais - só inicia se timer estiver rodando
   if (snowEnabled && isRunning) {
     startChristmasEffect();
+  }
+  if (newYearEnabled && isRunning) {
+    startNewYearEffect();
   }
 
   // Event listeners
@@ -1896,6 +2304,17 @@ function initializePersonalization() {
   soundToggle.addEventListener('change', (e) => {
     const enabled = e.target.checked;
     localStorage.setItem(SOUND_ENABLED_KEY, enabled.toString());
+  });
+
+  newYearToggle.addEventListener('change', (e) => {
+    const enabled = e.target.checked;
+    localStorage.setItem(NEW_YEAR_ENABLED_KEY, enabled.toString());
+
+    if (enabled && isRunning) {
+      startNewYearEffect();
+    } else {
+      stopNewYearEffect();
+    }
   });
 }
 

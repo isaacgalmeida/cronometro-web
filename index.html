@@ -495,6 +495,21 @@
               <div class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
+
+          <!-- New Year Effect Toggle -->
+          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
+            <div class="flex items-center gap-3">
+              <i data-lucide="sparkles" class="w-5 h-5 text-white/70"></i>
+              <div>
+                <h3 class="text-white font-medium">Efeito de Ano Novo</h3>
+                <p class="text-white/60 text-sm">Adiciona fogos de artifício e confetes dourados caindo na tela</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="newYearToggle" class="sr-only peer">
+              <div class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
         </div>
       </section>
     </div>
@@ -502,6 +517,9 @@
 
   <!-- Snow Effect Container -->
   <div id="snowContainer" class="fixed inset-0 pointer-events-none z-30 hidden"></div>
+
+  <!-- New Year Effect Container -->
+  <div id="newYearContainer" class="fixed inset-0 pointer-events-none z-31 hidden"></div>
 
   <footer class="relative z-20 w-full mt-16 mb-6">
     <div class="max-w-4xl mx-auto px-4 text-center text-white/60 text-sm">
