@@ -104,7 +104,14 @@ export function detectSelectedMusic() {
     return 'mp3://custom';
   }
 
-  // Verifica música preset selecionada
+  // Verifica card de música selecionado
+  const selectedCard = document.querySelector('.music-card.selected');
+  if (selectedCard && selectedCard.dataset.url) {
+    setMusicSelected(selectedCard.dataset.url);
+    return selectedCard.dataset.url;
+  }
+
+  // Verifica música preset selecionada (fallback para select)
   const presetSelect = document.getElementById('presetMusic');
   if (presetSelect && presetSelect.value) {
     setMusicSelected(presetSelect.value);
@@ -161,8 +168,23 @@ export async function loadBackgroundMusic() {
 
 /**
  * Popula o select de música com as opções carregadas
+ * Tenta usar o sistema de cards primeiro, fallback para select
  */
-function populateMusicSelect() {
+async function populateMusicSelect() {
+  // Tenta carregar o sistema de cards
+  try {
+    const { initializeMusicCards } = await import('./music-cards.js');
+    const success = initializeMusicCards(backgroundMusic);
+    
+    if (success) {
+      console.log('Sistema de cards de música inicializado');
+      return;
+    }
+  } catch (error) {
+    console.warn('Fallback para select tradicional:', error);
+  }
+
+  // Fallback: usa o select tradicional
   const select = document.getElementById('presetMusic');
   if (!select) {
     console.error('Elemento select não encontrado!');

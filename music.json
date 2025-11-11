@@ -519,6 +519,30 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=94remeXL0YE",
       "category": "geral",
       "duration": "100 minutos"
+    },
+    {
+      "id": 66,
+      "title": "🎵 Roberto Carlos - A Paz",
+      "description": "Roberto Carlos - A Paz",
+      "youtubeUrl": "https://www.youtube.com/watch?v=MSeKlbXW5VQ",
+      "category": "MPB",
+      "duration": "4 minutos"
+    },
+    {
+      "id": 67,
+      "title": "🎵 Simone - Então É Natal",
+      "description": "Simone - Então É Natal",
+      "youtubeUrl": "https://www.youtube.com/watch?v=jN7zqpcBGSQ",
+      "category": "christmas",
+      "duration": "4 minutos"
+    },
+    {
+      "id": 68,
+      "title": "🎵 Carlos Magrão - QUERÊNCIA AMADA",
+      "description": "Carlos Magrão - QUERÊNCIA AMADA",
+      "youtubeUrl": "https://www.youtube.com/watch?v=UhpUltbikws",
+      "category": "geral",
+      "duration": "4 minutos"
     }
   ]
 }

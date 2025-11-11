@@ -263,13 +263,72 @@
         <div class="space-y-4">
           <!-- Music Select -->
           <div>
-            <label class="sr-only" for="presetMusic">Músicas suaves</label>
-            <select id="presetMusic"
-              class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent backdrop-blur-sm">
-              <option value="" class="bg-slate-800 text-white">
-                🎵 Selecione uma música de fundo
-              </option>
-            </select>
+            <!-- Selected Music Display (sempre visível) -->
+            <div id="selectedMusicDisplay" class="mb-3 p-3 rounded-lg bg-white/5 border border-white/20">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <p class="text-white/60 text-xs mb-1">Música Selecionada:</p>
+                  <p class="text-white text-sm font-medium" id="selectedMusicTitle">Nenhuma música selecionada</p>
+                  <p class="text-white/60 text-xs" id="selectedMusicDuration"></p>
+                </div>
+                <button
+                  id="clearMusicSelection"
+                  class="text-white/70 hover:text-white transition-colors hidden"
+                  title="Limpar seleção"
+                >
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Toggle Button -->
+            <button
+              id="toggleMusicGrid"
+              class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/15 transition-all duration-200 flex items-center justify-between"
+            >
+              <span class="flex items-center gap-2">
+                <i data-lucide="music" class="w-4 h-4"></i>
+                <span id="toggleMusicText">Escolher Música de Fundo</span>
+              </span>
+              <i data-lucide="chevron-down" class="w-5 h-5" id="toggleMusicIcon"></i>
+            </button>
+
+            <!-- Music Selection Panel (inicialmente oculto) -->
+            <div id="musicPanel" class="hidden mt-3 p-4 rounded-lg bg-white/5 border border-white/20">
+              <!-- Category Filter -->
+              <div class="mb-3">
+                <label class="text-white text-xs font-medium mb-2 block">Filtrar por Categoria:</label>
+                <div class="flex flex-wrap gap-2" id="categoryFilters">
+                  <button class="category-filter active" data-category="all">
+                    Todas
+                  </button>
+                  <!-- Categorias serão inseridas aqui via JavaScript -->
+                </div>
+              </div>
+
+              <!-- Search -->
+              <div class="mb-3">
+                <input
+                  type="text"
+                  id="musicSearch"
+                  placeholder="🔍 Buscar música..."
+                  class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent backdrop-blur-sm"
+                />
+              </div>
+
+              <!-- Music Count -->
+              <div class="text-white/60 text-xs mb-2">
+                <span id="musicCount">0 músicas</span>
+              </div>
+
+              <!-- Music Cards Grid -->
+              <div 
+                id="musicGrid" 
+                class="music-grid max-h-80 overflow-y-auto pr-2 space-y-2"
+              >
+                <!-- Cards serão inseridos aqui via JavaScript -->
+              </div>
+            </div>
           </div>
 
           <!-- Custom YouTube Link -->
