@@ -241,6 +241,35 @@ export function applyCustomImage(imageData) {
 
     // Garante que todos os cards sejam visíveis (CSS flexbox cuida do posicionamento)
     setTimeout(() => {
+      // PRIMEIRO: Força estilos no card de tempo personalizado ANTES de processar todos
+      const customTimeDiv = document.querySelector('.w-full.flex.items-center.justify-center.gap-2.mb-6');
+      if (customTimeDiv) {
+        // Função para forçar flex
+        const forceFlexStyles = () => {
+          customTimeDiv.style.setProperty('display', 'flex', 'important');
+          customTimeDiv.style.setProperty('justify-content', 'center', 'important');
+          customTimeDiv.style.setProperty('align-items', 'center', 'important');
+          customTimeDiv.style.setProperty('gap', '0.5rem', 'important');
+        };
+        
+        forceFlexStyles();
+        
+        // Observer para manter os estilos
+        const observer = new MutationObserver(() => {
+          if (customTimeDiv.style.display !== 'flex') {
+            forceFlexStyles();
+            console.log('Estilos flex restaurados no card de tempo personalizado');
+          }
+        });
+        
+        observer.observe(customTimeDiv, { 
+          attributes: true, 
+          attributeFilter: ['style'] 
+        });
+        
+        console.log('Card de tempo personalizado forçado para flex com observer');
+      }
+      
       const allCards = mainContent.querySelectorAll('div.w-full, section');
       console.log('Total de cards encontrados:', allCards.length);
       
@@ -250,13 +279,18 @@ export function applyCustomImage(imageData) {
           return;
         }
         
+        // Pula a div de tempo personalizado que já foi configurada
+        if (card === customTimeDiv) {
+          console.log(`Card ${index} (tempo personalizado) - mantendo flex`);
+          return;
+        }
+        
         // Remove classes que podem esconder
         card.classList.remove('hidden');
         
         // Garante visibilidade sem sobrescrever display
-        // Só aplica display: block se o elemento não tiver flex
-        const computedStyle = window.getComputedStyle(card);
-        if (computedStyle.display !== 'flex') {
+        // Só aplica display: block se o elemento não tiver flex nas classes
+        if (!card.classList.contains('flex')) {
           card.style.display = 'block';
         }
         
