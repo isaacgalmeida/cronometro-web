@@ -528,18 +528,15 @@ select:focus-visible {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Layout lado a lado: Imagem 70% esquerda, Cards 30% direita */
+/* Layout lado a lado: Imagem 70% esquerda fixa, Cards 30% direita scrollável */
 .image-timer-layout {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  padding: 0;
-  padding-left: 70%;
-  min-height: 100vh;
   position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Imagem fixa à esquerda ocupando toda altura */
+/* Imagem fixa à esquerda ocupando toda altura visível */
 .image-timer-layout #customImageDisplay {
   position: fixed;
   left: 0;
@@ -550,6 +547,7 @@ select:focus-visible {
   padding: 2rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   z-index: 20;
 }
 
@@ -569,24 +567,24 @@ select:focus-visible {
   max-height: 100%;
 }
 
-/* Todos os cards ficam na lateral direita (30%) empilhados verticalmente */
-.image-timer-layout .timer-card-wrapper,
-.image-timer-layout > *:not(#customImageDisplay) {
-  width: 100%;
-  max-width: 100%;
-  padding: 0 2rem;
-  margin-bottom: 2rem;
-  display: block;
-}
-
-/* Timer card no topo da lateral direita */
+/* Timer card à direita */
 .image-timer-layout .timer-card-wrapper {
-  margin-top: 2rem;
+  margin-left: 70%;
+  width: 30%;
+  padding: 2rem 1.5rem 0 1.5rem;
 }
 
 .image-timer-layout .timer-card-wrapper > div {
   width: 100%;
-  max-width: 100%;
+  margin-bottom: 2rem;
+}
+
+/* Todos os outros cards também ficam à direita, abaixo do timer */
+.image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
+  margin-left: 70%;
+  width: 30%;
+  padding: 0 1.5rem;
+  margin-bottom: 2rem;
 }
 
 /* Timer grande quando em layout lado a lado */
@@ -631,18 +629,13 @@ select:focus-visible {
 body.timer-with-image footer {
   margin-left: 70%;
   width: 30%;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
+  margin-bottom: 2rem;
 }
 
 /* Espaçamento para o último card */
 .image-timer-layout > *:last-child:not(#customImageDisplay) {
   margin-bottom: 4rem;
-}
-
-/* Garante que todos os elementos fiquem em bloco (um abaixo do outro) */
-.image-timer-layout > * {
-  display: block;
-  clear: both;
 }
 
 /* Responsive adjustments for custom image */
@@ -661,9 +654,6 @@ body.timer-with-image footer {
 @media (max-width: 768px) {
   /* Em mobile, volta ao layout vertical */
   .image-timer-layout {
-    display: block;
-    padding: 1rem;
-    padding-left: 1rem;
     min-height: auto;
   }
 
@@ -673,19 +663,20 @@ body.timer-with-image footer {
     width: 100%;
     height: 50vh;
     margin-bottom: 1rem;
-    padding: 0;
+    padding: 1rem;
   }
 
-  .image-timer-layout .timer-card-wrapper,
-  .image-timer-layout > *:not(#customImageDisplay) {
+  .image-timer-layout .timer-card-wrapper {
+    margin-left: 0;
     width: 100%;
-    max-width: 100%;
-    padding: 0;
-    margin-bottom: 1rem;
+    padding: 0 1rem;
   }
   
-  .image-timer-layout .timer-card-wrapper {
-    margin-top: 0;
+  .image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
+    margin-left: 0;
+    width: 100%;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
   }
 
   .image-timer-layout #timer {
