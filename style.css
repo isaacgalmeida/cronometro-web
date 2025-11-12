@@ -530,14 +530,11 @@ select:focus-visible {
 
 /* Layout lado a lado: Imagem à esquerda, Timer à direita */
 .image-timer-layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  align-items: flex-start;
+  display: block;
   width: 100%;
   max-width: 100%;
-  padding: 0 2rem;
-  padding-left: calc(65% + 1rem);
+  padding: 0;
+  position: relative;
 }
 
 .image-timer-layout #customImageDisplay {
@@ -571,14 +568,12 @@ select:focus-visible {
 }
 
 .image-timer-layout .timer-card-wrapper {
-  flex: 0 0 100%;
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  order: 2;
-  padding: 2rem 0;
+  position: fixed;
+  right: 2rem;
+  top: 2rem;
+  width: calc(30% - 3rem);
+  max-width: calc(30% - 3rem);
+  z-index: 25;
 }
 
 .image-timer-layout .timer-card-wrapper > div {
@@ -606,31 +601,55 @@ select:focus-visible {
 
 /* Ajustar botões de ação no layout lado a lado */
 .image-timer-layout .flex.gap-3.justify-center button {
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
 }
 
 .image-timer-layout .flex.gap-3.justify-center button i {
-  width: 1rem;
-  height: 1rem;
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
-/* Todos os outros cards ficam centralizados abaixo */
+/* Ajustar padding dos cards na lateral direita */
+.image-timer-layout .bg-white\/10 {
+  padding: 1.5rem;
+}
+
+.image-timer-layout .timer-card-wrapper .bg-white\/10 {
+  padding: 2rem 1.5rem;
+}
+
+/* Container para a lateral direita com scroll */
+.image-timer-layout {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* Todos os outros cards ficam na lateral direita, abaixo do timer */
 .image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
-  order: 3;
-  width: 100%;
-  max-width: 48rem !important;
+  position: relative;
+  width: calc(30% - 4rem);
+  max-width: calc(30% - 4rem) !important;
   margin-left: auto;
-  margin-right: auto;
-  flex-basis: 100%;
+  margin-right: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Garante que o conteúdo centralizado fique em uma nova linha */
-.image-timer-layout::after {
-  content: '';
-  flex-basis: 100%;
-  height: 0;
-  order: 2;
+/* Espaçamento para o primeiro card após o timer - ajustado dinamicamente via JS */
+.image-timer-layout .timer-card-wrapper + * {
+  margin-top: 2rem;
+}
+
+/* Ajusta o posicionamento dos cards para começar após o timer */
+body.timer-with-image main.image-timer-layout {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+/* Espaçamento para o último elemento */
+.image-timer-layout > *:last-child {
+  margin-bottom: 4rem;
 }
 
 /* Responsive adjustments for custom image */
@@ -639,13 +658,19 @@ select:focus-visible {
     font-size: 5.5rem !important;
   }
   
-  .image-timer-layout {
-    padding-left: calc(68% + 1rem);
-  }
-  
   .image-timer-layout #customImageDisplay {
     max-width: 68%;
     width: calc(68% - 3rem);
+  }
+  
+  .image-timer-layout .timer-card-wrapper {
+    width: calc(28% - 3rem);
+    max-width: calc(28% - 3rem);
+  }
+  
+  .image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
+    width: calc(28% - 3rem);
+    max-width: calc(28% - 3rem) !important;
   }
 }
 
@@ -654,22 +679,28 @@ select:focus-visible {
     font-size: 3.5rem !important;
   }
   
-  .image-timer-layout {
-    padding-left: calc(60% + 1rem);
-  }
-  
   .image-timer-layout #customImageDisplay {
     max-width: 60%;
     width: calc(60% - 3rem);
+  }
+  
+  .image-timer-layout .timer-card-wrapper {
+    width: calc(35% - 3rem);
+    max-width: calc(35% - 3rem);
+  }
+  
+  .image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
+    width: calc(35% - 3rem);
+    max-width: calc(35% - 3rem) !important;
   }
 }
 
 @media (max-width: 768px) {
   /* Em mobile, volta ao layout vertical */
   .image-timer-layout {
+    display: flex;
     flex-direction: column;
-    padding: 0 1rem;
-    padding-left: 1rem;
+    padding: 1rem;
   }
 
   .image-timer-layout #customImageDisplay {
@@ -679,16 +710,15 @@ select:focus-visible {
     width: 100%;
     height: 50vh;
     margin-bottom: 1rem;
-    order: 1;
   }
 
   .image-timer-layout .timer-card-wrapper {
-    flex: 1;
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 100%;
     max-width: 100%;
-    min-height: auto;
-    height: auto;
-    order: 2;
-    padding: 1rem 0;
+    margin-bottom: 1rem;
   }
 
   .image-timer-layout #timer {
@@ -700,7 +730,15 @@ select:focus-visible {
   }
   
   .image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
-    order: 3;
+    position: relative;
+    width: 100%;
+    max-width: 100% !important;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .image-timer-layout > div:nth-child(3) {
+    padding-top: 0;
   }
 }
 

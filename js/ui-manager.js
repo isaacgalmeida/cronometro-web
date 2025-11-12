@@ -236,11 +236,29 @@ export function applyCustomImage(imageData) {
         wrapper.className = 'timer-card-wrapper';
         timerCard.parentNode.insertBefore(wrapper, timerCard);
         wrapper.appendChild(timerCard);
+        
+        // Ajusta o posicionamento dos cards seguintes após o timer ser renderizado
+        setTimeout(() => {
+          adjustCardsPosition();
+        }, 100);
       }
     }
 
     document.body.classList.add('timer-with-image');
     console.log('Custom image applied with side-by-side layout');
+  }
+}
+
+/**
+ * Ajusta a posição dos cards após o timer
+ */
+function adjustCardsPosition() {
+  const timerWrapper = document.querySelector('.timer-card-wrapper');
+  const firstCardAfterTimer = timerWrapper ? timerWrapper.nextElementSibling : null;
+  
+  if (timerWrapper && firstCardAfterTimer) {
+    const timerHeight = timerWrapper.offsetHeight;
+    firstCardAfterTimer.style.marginTop = `${timerHeight + 32}px`; // 32px = 2rem
   }
 }
 
