@@ -528,20 +528,188 @@ select:focus-visible {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
+/* Layout lado a lado: Imagem à esquerda, Timer à direita */
+.image-timer-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 2rem;
+  padding-left: calc(65% + 1rem);
+}
+
+.image-timer-layout #customImageDisplay {
+  flex: 1;
+  max-width: 65%;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  order: 1;
+  position: fixed;
+  left: 2rem;
+  top: 0;
+  width: calc(65% - 3rem);
+}
+
+.image-timer-layout #customImageDisplay .bg-white\/10 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.image-timer-layout #customImageDisplay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  max-height: 100%;
+}
+
+.image-timer-layout .timer-card-wrapper {
+  flex: 0 0 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  order: 2;
+  padding: 2rem 0;
+}
+
+.image-timer-layout .timer-card-wrapper > div {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Timer grande quando em layout lado a lado */
+.image-timer-layout #timer {
+  font-size: 4.5rem !important;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+/* Ajustar controles do timer no layout lado a lado */
+.image-timer-layout .timer-controls {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.image-timer-layout .timer-controls button {
+  font-size: 0.65rem;
+  padding: 0.4rem 0.5rem;
+}
+
+/* Ajustar botões de ação no layout lado a lado */
+.image-timer-layout .flex.gap-3.justify-center button {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+.image-timer-layout .flex.gap-3.justify-center button i {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Todos os outros cards ficam centralizados abaixo */
+.image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
+  order: 3;
+  width: 100%;
+  max-width: 48rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  flex-basis: 100%;
+}
+
+/* Garante que o conteúdo centralizado fique em uma nova linha */
+.image-timer-layout::after {
+  content: '';
+  flex-basis: 100%;
+  height: 0;
+  order: 2;
+}
+
 /* Responsive adjustments for custom image */
+@media (min-width: 1400px) {
+  .image-timer-layout #timer {
+    font-size: 5.5rem !important;
+  }
+  
+  .image-timer-layout {
+    padding-left: calc(68% + 1rem);
+  }
+  
+  .image-timer-layout #customImageDisplay {
+    max-width: 68%;
+    width: calc(68% - 3rem);
+  }
+}
+
+@media (max-width: 1200px) {
+  .image-timer-layout #timer {
+    font-size: 3.5rem !important;
+  }
+  
+  .image-timer-layout {
+    padding-left: calc(60% + 1rem);
+  }
+  
+  .image-timer-layout #customImageDisplay {
+    max-width: 60%;
+    width: calc(60% - 3rem);
+  }
+}
+
 @media (max-width: 768px) {
-  #customImageDisplay {
-    margin-bottom: 1rem;
+  /* Em mobile, volta ao layout vertical */
+  .image-timer-layout {
+    flex-direction: column;
+    padding: 0 1rem;
+    padding-left: 1rem;
   }
 
-  /* Smaller timer on mobile when image is present */
-  .timer-with-image #timer {
+  .image-timer-layout #customImageDisplay {
+    position: relative;
+    left: 0;
+    max-width: 100%;
+    width: 100%;
+    height: 50vh;
+    margin-bottom: 1rem;
+    order: 1;
+  }
+
+  .image-timer-layout .timer-card-wrapper {
+    flex: 1;
+    max-width: 100%;
+    min-height: auto;
+    height: auto;
+    order: 2;
+    padding: 1rem 0;
+  }
+
+  .image-timer-layout #timer {
     font-size: 3rem !important;
+  }
+
+  .image-timer-layout .timer-controls {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
+    order: 3;
   }
 }
 
 @media (max-width: 480px) {
-  .timer-with-image #timer {
+  .image-timer-layout #customImageDisplay {
+    height: 40vh;
+  }
+
+  .image-timer-layout #timer {
     font-size: 2.5rem !important;
   }
 }

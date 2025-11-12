@@ -213,27 +213,34 @@ export function clearCustomTimeInputs() {
 export function applyCustomImage(imageData) {
   const customImageDisplay = document.getElementById('customImageDisplay');
   const displayedImage = document.getElementById('displayedImage');
-  const timerCard = document.querySelector('.w-full.max-w-2xl.mb-8');
+  const mainContent = document.querySelector('main#conteudo');
+  
+  // Procura o primeiro card do timer (logo após o customImageDisplay)
+  const timerCard = customImageDisplay ? customImageDisplay.nextElementSibling : null;
 
   if (customImageDisplay && displayedImage && imageData) {
     displayedImage.src = imageData;
     customImageDisplay.classList.remove('hidden');
 
-    // Reduz o tamanho do timer quando há imagem
-    if (timerCard) {
-      timerCard.classList.remove('max-w-2xl');
-      timerCard.classList.add('max-w-xl');
+    // Aplica layout lado a lado
+    if (mainContent) {
+      mainContent.classList.add('image-timer-layout');
+      mainContent.classList.remove('flex-col', 'items-center', 'justify-center');
     }
 
-    // Ajusta o timer display para ficar menor
-    const timerEl = document.getElementById('timer');
-    if (timerEl) {
-      timerEl.classList.remove('text-9xl', 'md:text-9xl');
-      timerEl.classList.add('text-6xl', 'md:text-7xl');
+    // Envolve o timer card em um wrapper se ainda não existir
+    if (timerCard && !timerCard.classList.contains('timer-card-wrapper')) {
+      // Verifica se já não está dentro de um wrapper
+      if (!timerCard.parentElement.classList.contains('timer-card-wrapper')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'timer-card-wrapper';
+        timerCard.parentNode.insertBefore(wrapper, timerCard);
+        wrapper.appendChild(timerCard);
+      }
     }
 
     document.body.classList.add('timer-with-image');
-    console.log('Custom image applied');
+    console.log('Custom image applied with side-by-side layout');
   }
 }
 
@@ -245,24 +252,26 @@ export function removeCustomImage() {
   const imagePreview = document.getElementById('imagePreview');
   const imageUpload = document.getElementById('imageUpload');
   const applyImageBtn = document.getElementById('applyImage');
-  const timerCard = document.querySelector('.w-full.max-w-xl.mb-8') ||
-    document.querySelector('.w-full.max-w-2xl.mb-8');
+  const mainContent = document.querySelector('main#conteudo');
+  const timerCardWrapper = document.querySelector('.timer-card-wrapper');
 
   if (customImageDisplay) {
     customImageDisplay.classList.add('hidden');
   }
 
-  // Restaura tamanho original do timer
-  if (timerCard) {
-    timerCard.classList.remove('max-w-xl');
-    timerCard.classList.add('max-w-2xl');
+  // Remove layout lado a lado
+  if (mainContent) {
+    mainContent.classList.remove('image-timer-layout');
+    mainContent.classList.add('flex-col', 'items-center', 'justify-center');
   }
 
-  // Restaura tamanho original do timer display
-  const timerEl = document.getElementById('timer');
-  if (timerEl) {
-    timerEl.classList.remove('text-6xl', 'md:text-7xl');
-    timerEl.classList.add('text-9xl', 'md:text-9xl');
+  // Remove o wrapper do timer card se existir
+  if (timerCardWrapper) {
+    const timerCard = timerCardWrapper.firstElementChild;
+    if (timerCard) {
+      timerCardWrapper.parentNode.insertBefore(timerCard, timerCardWrapper);
+    }
+    timerCardWrapper.remove();
   }
 
   if (imagePreview) {
