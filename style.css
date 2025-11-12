@@ -528,27 +528,24 @@ select:focus-visible {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Layout lado a lado: Imagem 70% esquerda fixa, Cards 30% direita scrollável */
+/* Layout lado a lado: Imagem 70% e Timer 30% no topo, resto abaixo */
 .image-timer-layout {
-  position: relative;
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
+  padding: 2rem;
+  gap: 2rem;
 }
 
-/* Imagem fixa à esquerda ocupando toda altura visível */
+/* Imagem à esquerda - 70% da largura */
 .image-timer-layout #customImageDisplay {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 70%;
-  height: 100vh;
+  flex: 0 0 calc(70% - 1rem);
+  height: calc(100vh - 4rem);
   margin: 0;
-  padding: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 20;
 }
 
 .image-timer-layout #customImageDisplay .bg-white\/10 {
@@ -567,24 +564,58 @@ select:focus-visible {
   max-height: 100%;
 }
 
-/* Timer card à direita */
+/* Timer card à direita - 30% da largura, centralizado verticalmente */
 .image-timer-layout .timer-card-wrapper {
-  margin-left: 70%;
-  width: 30%;
-  padding: 2rem 1.5rem 0 1.5rem;
+  flex: 0 0 calc(30% - 1rem);
+  height: calc(100vh - 4rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
 }
 
 .image-timer-layout .timer-card-wrapper > div {
   width: 100%;
-  margin-bottom: 2rem;
 }
 
-/* Todos os outros cards também ficam à direita, abaixo do timer */
-.image-timer-layout > *:not(#customImageDisplay):not(.timer-card-wrapper) {
-  margin-left: 70%;
-  width: 30%;
-  padding: 0 1.5rem;
-  margin-bottom: 2rem;
+/* Todos os outros cards abaixo, centralizados */
+.image-timer-layout > div:not(#customImageDisplay):not(.timer-card-wrapper),
+.image-timer-layout > section:not(#customImageDisplay) {
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Garante que elementos com classes flex do Tailwind mantenham suas propriedades */
+.image-timer-layout .w-full.flex {
+  display: flex !important;
+}
+
+.image-timer-layout .items-center {
+  align-items: center !important;
+}
+
+.image-timer-layout .justify-center {
+  justify-content: center !important;
+}
+
+.image-timer-layout .gap-2 {
+  gap: 0.5rem !important;
+}
+
+.image-timer-layout .text-center {
+  text-align: center !important;
+}
+
+/* Força centralização específica para o card de tempo personalizado */
+.image-timer-layout .w-full.flex.items-center.justify-center.gap-2.mb-6 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  flex-wrap: wrap !important;
 }
 
 /* Timer grande quando em layout lado a lado */
@@ -625,17 +656,52 @@ select:focus-visible {
   padding: 1.5rem;
 }
 
-/* Footer também fica na lateral direita */
+/* Footer fica abaixo de tudo, centralizado */
 body.timer-with-image footer {
-  margin-left: 70%;
-  width: 30%;
-  padding: 0 1.5rem;
-  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2rem;
 }
 
 /* Espaçamento para o último card */
 .image-timer-layout > *:last-child:not(#customImageDisplay) {
-  margin-bottom: 4rem;
+  margin-bottom: 4rem !important;
+}
+
+/* Garante que main com image-timer-layout mostre todos os filhos */
+main.image-timer-layout > * {
+  box-sizing: border-box;
+}
+
+/* Força visibilidade de todos os cards na lateral direita */
+body.timer-with-image main.image-timer-layout > div.w-full,
+body.timer-with-image main.image-timer-layout > section {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Remove justify-center que pode estar centralizando e escondendo */
+main.image-timer-layout {
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+/* Garante que nenhum card seja escondido */
+.image-timer-layout .w-full.max-w-2xl,
+.image-timer-layout .w-full.max-w-3xl,
+.image-timer-layout .w-full.max-w-4xl {
+  display: block !important;
+  position: relative !important;
+}
+
+/* Força todos os divs e sections com w-full a ficarem visíveis */
+.image-timer-layout div.w-full:not(#customImageDisplay),
+.image-timer-layout section.w-full:not(#customImageDisplay) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Responsive adjustments for custom image */

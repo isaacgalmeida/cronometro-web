@@ -239,6 +239,36 @@ export function applyCustomImage(imageData) {
       }
     }
 
+    // Garante que todos os cards sejam visíveis (CSS flexbox cuida do posicionamento)
+    setTimeout(() => {
+      const allCards = mainContent.querySelectorAll('div.w-full, section');
+      console.log('Total de cards encontrados:', allCards.length);
+      
+      allCards.forEach((card, index) => {
+        // Pula o customImageDisplay e cards dentro do timer-card-wrapper
+        if (card.id === 'customImageDisplay' || card.closest('.timer-card-wrapper')) {
+          return;
+        }
+        
+        // Remove classes que podem esconder
+        card.classList.remove('hidden');
+        
+        // Garante visibilidade sem sobrescrever display
+        // Só aplica display: block se o elemento não tiver flex
+        const computedStyle = window.getComputedStyle(card);
+        if (computedStyle.display !== 'flex') {
+          card.style.display = 'block';
+        }
+        
+        card.style.visibility = 'visible';
+        card.style.opacity = '1';
+        
+        console.log(`Card ${index} visível:`, card.className.substring(0, 50));
+      });
+      
+      console.log('Layout aplicado com flexbox. Imagem (70%) e Timer (30%) no topo, outros cards abaixo.');
+    }, 100);
+
     document.body.classList.add('timer-with-image');
     console.log('Custom image applied with side-by-side layout');
   }
